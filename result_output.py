@@ -10,9 +10,9 @@ class Result_DataFrame:
         self.DataFrame = None
         self.idx = 0
 
-    def create_DataFrame(self):
+    def create_DataFrame(self, columns=columnString):
         #attributes : FileName, PIE, NX ..
-        self.DataFrame = pd.DataFrame(columns=columnString)
+        self.DataFrame = pd.DataFrame(columns)
         return self.DataFrame
 
     def add_row(self,resultlist):
