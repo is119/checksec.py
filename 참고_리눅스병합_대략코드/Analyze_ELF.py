@@ -5,6 +5,7 @@ ELF 분석 엔진
 - analyze_ELF_64(filename, binary)
 - devide_binary(binary) : 바이너리를 나눔
 
+test
 #check memory protector
 - is_CANARY
 - is_NX
