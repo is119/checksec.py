@@ -1,11 +1,10 @@
 from result_output import Result_DataFrame
 import pefile
 
-column_name = ['file_name', 'NX', 'SEH']
+column_name = ['file_name', 'DotNET', 'NX', 'SEH']
+# column_name = ['file_name', 'DotNET']
 
-# 데이터 프레임 세팅
-OutputDataObject = Result_DataFrame()
-OutputDataObject.create_DataFrame(columns=column_name)
+
 
 # 입력부
 def input_file(file_path = r"/"):
@@ -27,11 +26,22 @@ def is_SEH(pe):
     dllCharacteristics = pe.OPTIONAL_HEADER.DllCharacteristics
     return not(dllCharacteristics & pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_NO_SEH)
 
+def get_file_name(file_path=None):
+    return file_path[file_path.rfind('\\')+1:]
+
 if __name__ == "__main__":
+    # 데이터 프레임 세팅
+    OutputDataObject = Result_DataFrame()
+    OutputDataObject.create_DataFrame()
     #######test#######
     print("Input file path : ")
-    pe = input_file(input())
+    file_path = input()
+    pe = input_file(file_path)
+    print("is .NET ? ", is_DotNet(pe))
     print("is NX ? ", is_NX(pe))
     print("is SEH ? ", is_SEH(pe))
+
+    file_name = get_file_name(file_path)
+    OutputDataObject.add_row([str(file_name), str(is_DotNet(pe)), str(is_NX(pe)), str(is_SEH(pe))])
 
     ######################
