@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 
-columnString=['name', 'PIE', 'NX', 'defense']
+columnString = ['file_name', 'DotNET', 'NX', 'SEH']
 
 ############################################################
 class Result_DataFrame:
@@ -10,9 +10,9 @@ class Result_DataFrame:
         self.DataFrame = None
         self.idx = 0
 
-    def create_DataFrame(self, columns=columnString):
+    def create_DataFrame(self):
         #attributes : FileName, PIE, NX ..
-        self.DataFrame = pd.DataFrame(columns)
+        self.DataFrame = pd.DataFrame(columns=columnString)
         return self.DataFrame
 
     def add_row(self,resultlist):
