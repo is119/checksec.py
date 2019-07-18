@@ -2,8 +2,6 @@ import numpy as np
 import pandas as pd
 import json
 
-columnString=['Filename', 'CANARY', 'NX', 'PIE', 'RELRO']
-
 def output(opt,DataFrame):
     Datas=DataFrame.get_DataFrame()
     if opt == '-j':
