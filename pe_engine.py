@@ -8,6 +8,9 @@ from result_output import output
 
 class PeCheckSec(pefile.PE):
     """
+        PeCheckSec is derived from pefile.PE class
+        Add some useful methods to check which memory protection
+        techniques are applied
 
     """
 
@@ -16,9 +19,7 @@ class PeCheckSec(pefile.PE):
         # TODO:  https://github.com/trailofbits/winchecksec/blob/dbebe0b9d8aec69dbfac98aeb1ba5d525d97e312/Checksec.cpp#L61
         #  이 부분 if 문으로 할 필요 있는지 확인
 
-        Create a new PE checksec instance.
-        Add some useful methods to check which memory protection
-        techniques are applied
+        Create a new PeCheckSec instance.
 
         :param file_path: file_path for Instanciating PE class which pefile module contains
 
