@@ -287,3 +287,6 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/python,django,windows,pycharm
 *.pyc
 db.sqlite3
+
+*.json
+*.csv
