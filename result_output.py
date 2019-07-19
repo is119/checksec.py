@@ -8,11 +8,11 @@ columnString = ['file_name', 'DotNET', 'NX', 'SEH']
 class Result_DataFrame:
     def __init__(self):
         self.DataFrame = None
-        self.idx = 0
+        self.idx = 1
 
-    def create_DataFrame(self):
+    def create_DataFrame(self,attributes):
         #attributes : FileName, PIE, NX ..
-        self.DataFrame = pd.DataFrame(columns=columnString)
+        self.DataFrame = pd.DataFrame(columns=attributes)
         return self.DataFrame
 
     def add_row(self,resultlist):
@@ -32,21 +32,22 @@ class Result_DataFrame:
 ################dataframe class##############################
 
 def output(opt,DataFrame):
-    Datas=DataFrame.get_DataFrame()
-    if opt == '-j':
-        jstring=json.dumps(Datas.to_json(orient='split'), indent=4)
-        with open('result_Json.json', 'w') as jsonfile:
-            jsonfile.write(jstring)
+    def output(opt, DataFrame):
+        Datas = DataFrame.get_DataFrame()
+        if opt == '-j':
+            jstring = json.dumps(Datas.to_json(orient='split'), indent=4)
+            with open('result_Json.json', 'w') as jsonfile:
+                jsonfile.write(jstring)
 
-    elif opt == '-c':
-        Datas.to_csv('result_Csv.csv')
+        elif opt == '-c':
+            Datas.to_csv('result_Csv.csv')
 
-    elif opt=='-p':
-        Datas=DataFrame.get_DataFrame()
-        print(Datas)
+        elif opt == '-p':
+            Datas = DataFrame.get_DataFrame()
+            print(Datas)
 
-    else:
-        print('wrong input')
+        else:
+            print('wrong input')
 
 if __name__ == "__main__":
     #######testData#######
