@@ -73,13 +73,16 @@ class PeCheckSec(pefile.PE):
         return bool(self.__dll_characteristics & 0x20) and self.is_aslr()
 
     def is_force_integrity(self):
-        return not(self.__dll_characteristics & self.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY)
+        return not(self.__dll_characteristics & self.OPTIONAL_HEADER
+                   .IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY)
 
     def is_isolation(self):
-        return not(self.__dll_characteristics & self.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_NO_ISOLATION)
+        return not(self.__dll_characteristics & self.OPTIONAL_HEADER
+                   .IMAGE_DLLCHARACTERISTICS_NO_ISOLATION)
 
     def is_cfg(self):
-        return not(self.__dll_characteristics & self.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_GUARD_CF)
+        return not(self.__dll_characteristics & self.OPTIONAL_HEADER
+                   .IMAGE_DLLCHARACTERISTICS_GUARD_CF)
 
     def is_rfg(self):
         """
