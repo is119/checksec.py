@@ -1,7 +1,8 @@
-from result_output import Result_DataFrame
 import pefile
+from result_output import Result_DataFrame
+from result_output import output
 
-column_name = ['file_name', 'DotNET', 'NX', 'SEH']
+# column_name = ['file_name', 'DotNET', 'NX', 'SEH']
 # column_name = ['file_name', 'DotNET']
 
 
@@ -101,7 +102,36 @@ class PeCheckSec(pefile.PE):
 
     def is_gs(self):
         return self.__load_config.SecurityCookie != 0
-# # 입력부
+
+    def convert_2_result_dataframe(self):
+        res_dataframe = Result_DataFrame()
+        res_dataframe.create_DataFrame(
+            [
+                ".NET", "NX", "Dynamic Base", "ASLR", "CFG",
+                "Force Integrity", "GS", "High Entropy VA", "Isolation",
+                "RFG", "Safe SEH"
+            ]
+        )
+
+        result_list = [
+            self.is_dot_net(),
+            self.is_nx(),
+            self.is_dynamic_base(),
+            self.is_aslr(),
+            self.is_cfg(),
+            self.is_force_integrity(),
+            self.is_gs(),
+            self.is_high_entropy_va(),
+            self.is_isolation(),
+            self.is_rfg(),
+            self.is_safe_seh()
+        ]
+
+        res_dataframe.add_row(result_list)
+        return res_dataframe
+
+
+# 입력부
 # def input_file(file_path = r"/"):
 #     pe = None
 #     pe = pefile.PE(file_path)
@@ -114,10 +144,6 @@ class PeCheckSec(pefile.PE):
 #     return file_path[file_path.rfind('\\')+1:]
 
 if __name__ == "__main__":
-
-    # 데이터 프레임 세팅
-    OutputDataObject = Result_DataFrame()
-    OutputDataObject.create_DataFrame()
 
     # PE 파일 세팅
     file_path = input("Input file path : ")
@@ -135,6 +161,11 @@ if __name__ == "__main__":
     print("is ISOLATION? ", pe.is_isolation())
     print("is RFG? ", pe.is_rfg())
     print("is SafeSEH? ", pe.is_safe_seh())
+
+    DataFrame = pe.convert_2_result_dataframe()
+    output('-c', DataFrame)
+    output('-p', DataFrame)
+    output('-j', DataFrame)
 
     #
     # file_name = get_file_name(file_path)
