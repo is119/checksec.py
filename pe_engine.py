@@ -14,7 +14,7 @@ class PeCheckSec(pefile.PE):
     def __init__(self, file_path):
         """
         # TODO:  https://github.com/trailofbits/winchecksec/blob/dbebe0b9d8aec69dbfac98aeb1ba5d525d97e312/Checksec.cpp#L61
-        #  이 부분 if문으로 할 필요 있는지 확인
+        #  이 부분 if 문으로 할 필요 있는지 확인
 
         Create a new PE checksec instance.
         Add some useful methods to check which memory protection
@@ -23,11 +23,11 @@ class PeCheckSec(pefile.PE):
         :param file_path: file_path for Instanciating PE class which pefile module contains
 
         :attribute __image_characteristics : Characteristics in pe's file header
-        :attribiute __dll_characteristics :  DllCharacteristics in pe's optional header
-        :attribiute __clr_config : 10th data_directory in pe's optional header
-        :attribiute image_load_config_directory : use to make calculating
+        :attribute __dll_characteristics :  DllCharacteristics in pe's optional header
+        :attribute __clr_config : 10th data_directory in pe's optional header
+        :attribute image_load_config_directory : use to make calculating
             __load_config simple
-        :attribiute __load_config : get image_load_config_directory's information
+        :attribute __load_config : get image_load_config_directory's information
         """
         super().__init__(file_path)
 
@@ -35,7 +35,6 @@ class PeCheckSec(pefile.PE):
 
         self.__dll_characteristics = \
             self.OPTIONAL_HEADER.DllCharacteristics
-
 
         self.__clr_config = \
                 self.OPTIONAL_HEADER.DATA_DIRECTORY[14]
@@ -106,9 +105,9 @@ class PeCheckSec(pefile.PE):
     def is_gs(self):
         return self.__load_config.SecurityCookie != 0
 
-    def convert_2_result_dataframe(self):
-        res_dataframe = Result_DataFrame()
-        res_dataframe.create_DataFrame(
+    def convert_2_result_data_frame(self):
+        res_data_frame = Result_DataFrame()
+        res_data_frame.create_DataFrame(
             [
                 ".NET", "NX", "Dynamic Base", "ASLR", "CFG",
                 "Force Integrity", "GS", "High Entropy VA", "Isolation",
@@ -130,8 +129,8 @@ class PeCheckSec(pefile.PE):
             self.is_safe_seh()
         ]
 
-        res_dataframe.add_row(result_list)
-        return res_dataframe
+        res_data_frame.add_row(result_list)
+        return res_data_frame
 
 
 # 입력부
@@ -165,7 +164,7 @@ if __name__ == "__main__":
     print("is RFG? ", pe.is_rfg())
     print("is SafeSEH? ", pe.is_safe_seh())
 
-    DataFrame = pe.convert_2_result_dataframe()
+    DataFrame = pe.convert_2_result_data_frame()
     output('-c', DataFrame)
     output('-p', DataFrame)
     output('-j', DataFrame)
