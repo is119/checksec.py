@@ -1,3 +1,2 @@
-,file_name,DotNET,NX,SEH
-0,file.exe,defense,sleepys,defense
-1,file2.exe,defense2,sleepy2s2,defens2e
+,.NET,NX,Dynamic Base,ASLR,CFG,Force Integrity,GS,High Entropy VA,Isolation,RFG,Safe SEH
+1,False,True,True,False,True,True,True,False,True,False,True
