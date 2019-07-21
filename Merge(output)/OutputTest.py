@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import yaml
 import json
 
 def output(opt,DataFrame):
@@ -16,5 +17,10 @@ def output(opt,DataFrame):
         Datas=DataFrame.get_DataFrame()
         print(Datas)
 
+    elif opt=='-y': #yaml
+        with open('result_Yaml.yaml', 'w') as yamlfile:
+            yaml.dump(Datas, yamlfile, default_flow_style=False)
+
     else:
         print('wrong input')
+
