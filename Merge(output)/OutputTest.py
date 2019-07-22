@@ -1,35 +1,7 @@
 import numpy as np
 import pandas as pd
+import yaml
 import json
-
-columnString=['name', 'PIE', 'NX', 'defense']
-
-############################################################
-class Result_DataFrame:
-    def __init__(self):
-        self.DataFrame = None
-        self.idx = 0
-
-    def create_DataFrame(self):
-        #attributes : FileName, PIE, NX ..
-        self.DataFrame = pd.DataFrame(columns=columnString)
-        return self.DataFrame
-
-    def add_row(self,resultlist):
-        #resultlist : ['box.exe','x','o',...]
-        self.DataFrame.loc[self.idx] = resultlist
-        self.idx += 1
-
-    def get_DataFrame(self):
-        return self.DataFrame
-
-    def setIdx(self, idx):
-        self.idx = idx
-
-    def getIdx(self):
-        return self.idx
-
-################dataframe class##############################
 
 def output(opt,DataFrame):
     Datas=DataFrame.get_DataFrame()
@@ -45,14 +17,10 @@ def output(opt,DataFrame):
         Datas=DataFrame.get_DataFrame()
         print(Datas)
 
+    elif opt=='-y': #yaml
+        with open('result_Yaml.yaml', 'w') as yamlfile:
+            yaml.dump(Datas, yamlfile, default_flow_style=False)
+
     else:
         print('wrong input')
 
-if __name__ == "__main__":
-    #######testData#######
-    OutputDataObject=Result_DataFrame()
-    OutputDataObject.create_DataFrame()
-    OutputDataObject.add_row(['file.exe', 'defense', 'sleepys', 'defense'])
-    OutputDataObject.add_row(['file2.exe', 'defense2', 'sleepy2s2', 'defens2e'])
-    ######################
-    output('-c', OutputDataObject)
