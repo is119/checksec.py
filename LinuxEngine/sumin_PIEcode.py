@@ -3,12 +3,16 @@ from elftools.elf.elffile import ELFFile
 from elftools.elf.descriptions import *
 from elftools.elf.structs import *
 from elftools.elf.dynamic import *
+from elftools.elf.sections import *
+from elftools.elf.enums import ENUM_D_TAG
 from elftools.elf.segments import *
+from elftools.elf.descriptions import _DESCR_D_TAG, _low_priority_D_TAG
 import sys
 import os
 
-def func():
-    f = open('.//sample//elf32','rb')
+def main():
+    #if you want to test, change file route
+    f = open('.//sample//PIE//DSO//samplecode.o','rb')
     elf = ELFFile(f)
     elf_type = elf.header['e_type']
     print(elf_type)
@@ -17,28 +21,23 @@ def func():
         #static code
         print('No PIE')
     elif elf_type == 'ET_DYN':
-        #dynamic code
         #check Dynamic Section
-        print('ET_DYN file')
+        elf_section_dynamic = elf.get_section_by_name('.dynamic')
+
+        i = 0
+        while i < elf_section_dynamic.num_tags():
+            dynamic_entry = str(elf_section_dynamic.get_tag(i))
+            if 'DT_DEBUG' in dynamic_entry:
+                print(dynamic_entry,'PIE')
+                break
+            else:
+                i += 1
+        if i == elf_section_dynamic.num_tags():
+                print('DSO')
     else:
         print('Not executable ELF file')
 
     f.close()
 
-def main():
-    f = open('.//sample//elf32','rb')
-    elf = ELFFile(f)
-    #get dynamic segment
-    #elf_section_21 = elf.get_section(21
-
-    #sectionHeader
-    elf_section_dynamic = elf.get_section_by_name('.dynamic')
-    elf_section_dynsym = elf.get_section_by_name('.dynsym')
-    elf_section_data = elf.get_section_by_name('.data')
-
-    test = elf_section_data.get_symbol(3)
-    print(test)
-    print(test['STV_HIDDEN'])
-
 if __name__ == "__main__":
-    func()
+    main()
