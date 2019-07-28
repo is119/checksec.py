@@ -1,4 +1,6 @@
-import resultDataFrame
+import Result_DataFrame
+import re
+from elftools.elf.dynamic import *
 '''
 ELF 분석 엔진
 - analyze_ELF_32(filename,binary) : 결과를 저장할 데이터 프레임 생성
@@ -39,7 +41,7 @@ def analyze_ELF_32(filename,binary):
     resultlist.append((lambda x : 'O' if x else 'X')(is_CANARY(Header)))
     resultlist.append((lambda x : 'O' if x else 'X')(is_NX(Header)))
     resultlist.append((lambda x : 'O' if x else 'X')(is_PIE(Header)))
-    resultlist.append(is_CANARY(is_RELRO))
+    resultlist.append((lambda x : 'O' if x else 'X')(is_RELRO(Header)))
 
     #데이터프레임에 결과를 저장 및 return
 # 논의 : 데이터프레임을 넘기는 것이 좋을지, resultTable 객체를 넘기는 것이 좋을 지 모르겠다.
@@ -73,5 +75,5 @@ def is_PIE(bipart):
     pass
 
 def is_RELRO(bipart):
-    #return string (3 type)
+    #RELRO vs no RELRO
     pass
