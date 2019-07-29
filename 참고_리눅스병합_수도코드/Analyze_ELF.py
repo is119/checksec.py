@@ -41,7 +41,7 @@ def analyze_ELF_32(filename,binary):
     resultlist.append((lambda x : 'O' if x else 'X')(is_CANARY(Header)))
     resultlist.append((lambda x : 'O' if x else 'X')(is_NX(Header)))
     resultlist.append((lambda x : 'O' if x else 'X')(is_PIE(Header)))
-    resultlist.append((lambda x : 'O' if x else 'X')(is_RELRO(Header)))
+    resultlist.append(is_RELRO(Header))
 
     #데이터프레임에 결과를 저장 및 return
 # 논의 : 데이터프레임을 넘기는 것이 좋을지, resultTable 객체를 넘기는 것이 좋을 지 모르겠다.
