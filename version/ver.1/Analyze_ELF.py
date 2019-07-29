@@ -3,16 +3,17 @@ from elftools.elf.elffile import ELFFile
 from Result_DataFrame import *
 import sys
 
-#check memory protector
+#must edit!
+import canary
+import NX
+
+#   >> check memory protector <<
 
 def is_CANARY(elf):
-    #return bool
-    return True
+    return canary.checkCanary(elf)
 
 def is_NX(elf):
-    #return bool
-    return True
-
+    return NX.checkNX(elf)
 
 def is_PIE(elf):
     elf_type = elf.header['e_type']
@@ -40,12 +41,12 @@ def is_PIE(elf):
         print('[Error] Not executable ELF file')
         sys.exit(1)
 
-def is_RELRO(binary):
+def is_RELRO(elf):
     #return string (3 type)
     return "RELRO"
 
 
-#analyze
+#   >> analyze <<
 
 def analyze_ELF_32(filename):
     #open file
@@ -68,7 +69,6 @@ def analyze_ELF_32(filename):
     resultlist.append(is_RELRO(elf))
 
     #데이터프레임에 결과를 저장 및 return
-# 논의 : 데이터프레임을 넘기는 것이 좋을지, resultTable 객체를 넘기는 것이 좋을 지 모르겠다.
     f.close()
     resultTable.add_row(resultlist)
     return resultTable

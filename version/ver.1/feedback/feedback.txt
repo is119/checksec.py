@@ -21,17 +21,34 @@ input 변경사항
   1. print('wrong input') -> print('[Error] There was a problem processing the option.')
 
 
-3. is_PIE
+3. PIE
 - 추가
   1. sys.exit(1)
 
 
 
+4. CANARY
+- 제거
+1. def main():
+  checkCanary('nocanary32')
+
+  if __name__=="__main__":
+  main()
+2. 	with open(file, 'rb') as f:
 
 
+- 수정
+  1. canary=ElfInfo.display_symbol_tables()
+	 print(canary)
+-> return ElfInfo.display_symbol_tables()
+
+#input file_path -> input elf객체
+#코드 전반적으로 수정
 
 
-
+5. NX
+#input file_path -> input elf객체
+#코드 전반적으로 수정
 
 
 
@@ -62,6 +79,11 @@ input 변경사항
 
 3. PIE
 - 서로다른 옵션 (-pie, -fPIE) 구분하여 처리 방법 구상
+
+
+4. CANARY
+- 일단, class로 해서 모듈로 넣었음. class 제거 -> 함수로 만들어 Analyze_ELF에 넣으세요
+
 
 
 

@@ -6,9 +6,7 @@ import Analyze_PE
 import Analyze_ELF
 #Output
 from Output import output
-#pip install python-magic-bin
-#pip install pandas
-#pip install numpy
+
 
 def engine(file_path):
     #analyze magic_number
