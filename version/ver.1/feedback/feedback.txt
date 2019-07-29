@@ -1,11 +1,11 @@
 >> edit <<
 input 변경사항
 - 추가
-  사용법 안내 (man 함수 )
+  1. 사용법 안내 (man 함수 )
   2. '-y' 옵션
 
 - 제거
-  file_name = list() ##파일 경로 출력용 리스트
+  1. file_name = list() ##파일 경로 출력용 리스트
 
           file_name.append(arg)
           print(file_name)      #리스트 출력
@@ -18,7 +18,46 @@ input 변경사항
 
 2. Output
 - 수정
-  print('wrong input') -> print('[Error] There was a problem processing the option.')
+  1. print('wrong input') -> print('[Error] There was a problem processing the option.')
+
+
+3. PIE
+- 추가
+  1. sys.exit(1)
+
+
+
+4. CANARY
+- 제거
+1. def main():
+  checkCanary('nocanary32')
+
+  if __name__=="__main__":
+  main()
+2. 	with open(file, 'rb') as f:
+
+
+- 수정
+  1. canary=ElfInfo.display_symbol_tables()
+	 print(canary)
+-> return ElfInfo.display_symbol_tables()
+
+#input file_path -> input elf객체
+#코드 전반적으로 수정
+
+
+
+5. NX
+#input file_path -> input elf객체
+#코드 전반적으로 수정
+
+
+
+
+
+
+
+
 
 >> feedback <<
 1. input
@@ -45,6 +84,24 @@ input 변경사항
   - yaml 출력이 이상함(output_yaml.png 참고)
 
 
+3. PIE
+- 서로다른 옵션 (-pie, -fPIE) 구분하여 처리 방법 구상
+
+
+4. CANARY
+- 일단, class로 해서 모듈로 넣었음. class 제거 -> 함수로 만들어 Analyze_ELF에 넣으세요
+
+
+5. NX
+- 일단, class로 해서 모듈로 넣었음. class 제거 -> 함수로 만들어 Analyze_ELF에 넣으세요
+
+
+6. RELRO
+- relro 개발 <기능이 정상적으로 동작하지 않음>
+
+
+
 >> 논의 <<
-1. 여러개의 파일을 받을 것인가?
+1. 여러개의 파일을 인자로 받을 것인가?
 2. 결과파일 저장 경로 옵션을 줄 것인가? (ex. -c/-j/-y 시 맨 뒤에 '-d [경로]')
+3. 유연하고 일관된 에러처리

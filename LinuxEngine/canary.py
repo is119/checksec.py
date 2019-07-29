@@ -2,6 +2,8 @@ from elftools.elf.elffile import ELFFile
 from elftools.elf.sections import SymbolTableSection
 import os, sys
 
+#must edit!
+
 class ReadElf(object):
 	def __init__(self, file):
 		self.elffile=ELFFile(file)
