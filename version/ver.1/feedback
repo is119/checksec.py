@@ -1,0 +1,25 @@
+>> edit <<
+input 변경사항
+- 추가
+  사용법 안내 (man 함수 )
+
+- 제거
+file_name = list() ##파일 경로 출력용 리스트
+
+        file_name.append(arg)
+        print(file_name)      #리스트 출력
+
+
+>> feedback <<
+1. input
+ 뭘 하는 코드?
+
+
+
+- 모듈 쓰지 않고 처리할 수 있는 방법
+- magic number를 누가 임의로 변경했을 경우 처리
+  1. 경고 2. magic number 외 elf, pe를 나눌 수 있는 다른 부분 보고 판단
+- 옵션은 옵션 관련된 인자 사용
+- 옵션에 대한 설명 추가
+- 옵션이 없을 경우 처리
+  1. 경고 2. man 페이지 3. 다른 default 옵션
