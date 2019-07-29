@@ -13,7 +13,7 @@ class Result_DataFrame:
 
 
     def add_row(self,resultlist):
-        self.DataFrame.loc[idx] = resultlist
+        self.DataFrame.loc[self.idx] = resultlist
         self.idx += 1
 
     def get_DataFrame(self):

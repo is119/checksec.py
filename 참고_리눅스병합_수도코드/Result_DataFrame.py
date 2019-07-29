@@ -33,7 +33,7 @@ class Result_DataFrame:
     def add_row(self,resultlist):
         #resultlist : ['box.exe','x','o',...]
         #분석 결과(열)을 테이블 데이터프레임에 추가
-        self.DataFrame.loc[idx] = resultlist
+        self.DataFrame.loc[self.idx] = resultlist
         self.idx += 1
 
     def get_DataFrame(self):

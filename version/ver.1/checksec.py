@@ -4,13 +4,14 @@ import magic
 import Result_DataFrame
 import Analyze_PE
 import Analyze_ELF
+#Output
+from Output import output
 #pip install python-magic-bin
 #pip install pandas
 #pip install numpy
 
-    #시그니처 분석 및 엔진에 넘기기
-def get_signature(file_path):
-
+def engine(file_path):
+    #analyze magic_number
     signature = magic.from_file(file_path)
 
     if 'ELF 32-bit' in signature :
@@ -26,7 +27,7 @@ def get_signature(file_path):
 
     #옵션 추출
 def get_opt(opt):
-    opt_list = ['-j', '-c', '-p']
+    opt_list = ['-j', '-c', '-p', '-y']
 
     if opt in opt_list :
         return opt
@@ -43,6 +44,7 @@ def man():
     print(" \'-j\' : json")
     print(" \'-c\' : csv")
     print(" \'-p\' : console")
+    print(" \'-y\' : yaml")
 
 
 def main():
@@ -54,10 +56,15 @@ def main():
     #option
     opt = get_opt(sys.argv[1])
 
-    for arg in sys.argv[2:]:
+    for file_path in sys.argv[2:]:
         #print file_names
-        print(arg)
-        get_signature(arg)
+        print(file_path)
+        engine(file_path)
+
+    #analysis result
+    DataFrame = engine(file_path)
+    output(opt, DataFrame)
+
 
 
 if __name__ == '__main__':

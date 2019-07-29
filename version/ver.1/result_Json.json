@@ -1,0 +1,1 @@
+"{\"columns\":[\"Filename\",\"CANARY\",\"NX\",\"PIE\",\"RELRO\"],\"index\":[0],\"data\":[[\"sample\\/elf32\",\"O\",\"O\",\"O\",true]]}"
