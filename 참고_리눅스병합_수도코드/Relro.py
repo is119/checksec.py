@@ -7,21 +7,33 @@ def main():
     elf = ELFFile(f)
 
     # Is it relro?
-
+    have_Relro = False
     for segment in elf.iter_segments():
         if "PT_GNU_RELRO" in segment['p_type']:
-            print('o')
+            return print('X')
+        else:
+            have_Relro = True
+            break
 
     # FULL RELRO vs PARTAL RELRO
 
-    key = "DT_BIND_NOW"
-    for section in elf.iter_sections():
-        if type(section) is DynamicSection:
-            for tag in section.iter_tags():
-                if tag == key:
-                   return print('O(Full Relro)')
-                else:
-                   return print('O(Partial Relro)')
+    if have_Relro:
+        key = "DT_BIND_NOW"
+        for section in elf.iter_sections():
+            if type(section) is DynamicSection:
+                for tag in section.iter_tags():
+                    if tag.entry.d_tag == key:
+                        return print('O(Full Relro)')
+                    else:
+                        return print('O(Partial Relro)')
+
+    # for section in elf.Dynamicsection:
+    #     print(section)
+    #     for tag in section.iter_tags():
+    #         if tag.entry.d_tag == key:
+    #             return print('O(Full Relro)')
+    #         else:
+    #             return print('O(Partial Relro)')
 
     f.close()
 
