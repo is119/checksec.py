@@ -61,9 +61,6 @@ input 변경사항
 
 >> feedback <<
 1. input
- 뭘 하는 코드?
-
-
 - input을 checksec.py안에 통으로 넣을 것인가, 혹은 따로 모듈로 뽑을것?
 - 모듈 쓰지 않고 처리할 수 있는 방법
 - magic number를 누가 임의로 변경했을 경우 처리
