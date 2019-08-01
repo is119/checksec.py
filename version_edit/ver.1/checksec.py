@@ -64,7 +64,6 @@ def output(opt,DataFrame):
 
         elif opt=='-y':
             with open(filename+'_Yaml.yaml', 'w') as yamlfile:
-                print(Datas.to_dict())
                 yaml.dump(Datas.to_dict(), yamlfile, default_flow_style=False, sort_keys=False)
                 print('Yaml file created')
 
