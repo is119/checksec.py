@@ -1,5 +1,6 @@
 #-*-coding: utf-8-*-
 from elftools.elf.elffile import ELFFile
+from elftools.elf.sections import SymbolTableSection
 from Result_DataFrame import *
 import sys
 
@@ -10,10 +11,17 @@ import NX
 #   >> check memory protector <<
 
 def is_CANARY(elf):
-    return canary.checkCanary(elf)
+	symbol_tables = [s for s in elf.iter_sections() if isinstance(s, SymbolTableSection)]
+	for section in symbol_tables:
+		if(section.get_symbol_by_name('__stack_chk_fail')):
+			return True
+	return False
 
 def is_NX(elf):
-    return NX.checkNX(elf)
+    for segment in elf.iter_segments():
+        if(segment['p_type'] is 'PT_GNU_STACK' and segment['p_flags'] is 6):
+            return True
+    return False
 
 def is_PIE(elf):
     elf_type = elf.header['e_type']
