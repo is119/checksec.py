@@ -29,9 +29,11 @@ class Result_DataFrame:
         self.DataFrame = pd.DataFrame(columns=attributes)
         return self.DataFrame
 
+        #라인을 추가하는 코드
     def add_row(self,resultlist):
         #resultlist : ['box.exe','x','o',...]
-        self.DataFrame.loc[idx] = resultlist
+        #분석 결과(열)을 테이블 데이터프레임에 추가
+        self.DataFrame.loc[self.idx] = resultlist
         self.idx += 1
 
     def get_DataFrame(self):

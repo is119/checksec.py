@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import yaml
 import json
-import Result_DataFrame
 
 def output(opt,DataFrame):
     Datas=DataFrame.get_DataFrame()
@@ -23,4 +22,4 @@ def output(opt,DataFrame):
             yaml.dump(Datas, yamlfile, default_flow_style=False)
 
     else:
-        print('wrong input')
+        print('[Error] There was a problem processing the option.')

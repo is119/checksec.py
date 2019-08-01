@@ -1,0 +1,104 @@
+>> edit <<
+input 변경사항
+- 추가
+  1. 사용법 안내 (man 함수 )
+  2. '-y' 옵션
+
+- 제거
+  1. file_name = list() ##파일 경로 출력용 리스트
+
+          file_name.append(arg)
+          print(file_name)      #리스트 출력
+
+- 수정
+  1. get_signature(file_path) -> engine(file_path)
+  2.     for file_path in sys.argv[2:]: 하위 모든 arg를 file_path로 통일
+
+
+
+2. Output
+- 수정
+  1. print('wrong input') -> print('[Error] There was a problem processing the option.')
+
+
+3. PIE
+- 추가
+  1. sys.exit(1)
+
+
+
+4. CANARY
+- 제거
+1. def main():
+  checkCanary('nocanary32')
+
+  if __name__=="__main__":
+  main()
+2. 	with open(file, 'rb') as f:
+
+
+- 수정
+  1. canary=ElfInfo.display_symbol_tables()
+	 print(canary)
+-> return ElfInfo.display_symbol_tables()
+
+#input file_path -> input elf객체
+#코드 전반적으로 수정
+
+
+
+5. NX
+#input file_path -> input elf객체
+#코드 전반적으로 수정
+
+
+
+
+
+
+
+
+
+>> feedback <<
+1. input
+- input을 checksec.py안에 통으로 넣을 것인가, 혹은 따로 모듈로 뽑을것?
+- 모듈 쓰지 않고 처리할 수 있는 방법
+- magic number를 누가 임의로 변경했을 경우 처리
+  1. 경고 2. magic number 외 elf, pe를 나눌 수 있는 다른 부분 보고 판단
+- 옵션은 옵션 관련된 인자 사용
+- 옵션에 대한 설명 추가
+- 옵션이 없을 경우 처리
+  1. 경고 2. man 페이지 3. 다른 default 옵션
+
+
+2. Output
+  - checksec.py안에 통으로 넣을 것인가, 혹은 따로 모듈로 뽑을 것?
+  - 출력이름을 입력한 파일마다 다르게 지정할 필요성
+    -> 파일이름이 동일해, csv/json/yaml/ 처리 시 파일이 덮어쓰기됨
+  - '-p' 옵션 시 출력(output_p.png 참고)
+    가운데 정렬이 되면 좋을 듯
+  - 파일 출력 시(csv/json/yaml) 파일이 성공적으로 출력되었다/실패되었다 를 알려주는 문구 추가
+  - yaml 출력이 이상함(output_yaml.png 참고)
+
+
+3. PIE
+- 서로다른 옵션 (-pie, -fPIE) 구분하여 처리 방법 구상
+
+
+4. CANARY
+- 일단, class로 해서 모듈로 넣었음. class 제거 -> 함수로 만들어 Analyze_ELF에 넣으세요
+
+
+5. NX
+- 일단, class로 해서 모듈로 넣었음. class 제거 -> 함수로 만들어 Analyze_ELF에 넣으세요
+
+
+6. RELRO
+- relro 개발 <기능이 정상적으로 동작하지 않음>
+
+
+
+>> 논의 <<
+1. 여러개의 파일을 인자로 받을 것인가?
+2. 결과파일 저장 경로 옵션을 줄 것인가? (ex. -c/-j/-y 시 맨 뒤에 '-d [경로]')
+3. 유연하고 일관된 에러처리
