@@ -5,8 +5,9 @@ import Result_DataFrame
 import Analyze_PE
 import Analyze_ELF
 #Output
-from Output import output
-
+#import numpy as np
+import pandas as pd
+import yaml, json
 
 def engine(file_path):
     #analyze magic_number
@@ -23,7 +24,6 @@ def engine(file_path):
     else :
         print("Not Executable file!")
 
-    #옵션 추출
 def get_opt(opt):
     opt_list = ['-j', '-c', '-p', '-y']
 
@@ -43,6 +43,42 @@ def man():
     print(" \'-c\' : csv")
     print(" \'-p\' : console")
     print(" \'-y\' : yaml")
+
+def output(opt,DataFrame):
+    Datas=DataFrame.get_DataFrame()
+    filename=Datas.Filename[0]
+    try:
+        if opt=='-j':
+            jstring=json.dumps(Datas.to_json(orient='split'), indent=4)
+            with open(filename+'_Json.json', 'w') as jsonfile:
+                jsonfile.write(jstring)
+                print('Json file created.')
+
+        elif opt == '-c':
+            Datas.to_csv(filename+'_Csv.csv')
+            print('Csv file created.')
+
+        elif opt=='-p':
+            Datas=DataFrame.get_DataFrame()
+            print(Datas)
+
+        elif opt=='-y':
+            with open(filename+'_Yaml.yaml', 'w') as yamlfile:
+                yaml.dump(Datas.to_dict(), yamlfile, default_flow_style=False, sort_keys=False)
+                print('Yaml file created')
+
+        else:
+            print('[Error] There was a problem processing the option.')
+
+    except:
+        if opt=='-j':
+            print('[Error] Can\'t make json file.')
+        elif opt=='-y':
+            print('[Error] Can\'t make yaml file.')
+        elif opt=='-c':
+            print('[Error] Can\'t make csv file.')
+        else:
+            print('test')
 
 
 def main():
