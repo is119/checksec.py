@@ -9,7 +9,7 @@ from result_output import output
 class PeCheckSec(pefile.PE):
     """
         PeCheckSec is derived from pefile.PE class
-        Add some useful methods to check which memory protection
+        Added some useful methods to check which memory protection
         techniques are applied
 
     """
