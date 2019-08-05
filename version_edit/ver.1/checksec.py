@@ -1,5 +1,7 @@
 import sys
 import magic
+import os
+import re
 #file
 import Result_DataFrame
 import Analyze_PE
@@ -11,6 +13,7 @@ import yaml, json
 
 def engine(file_path):
     #analyze magic_number
+    
     signature = magic.from_file(file_path)
 
     if 'ELF 32-bit' in signature :
@@ -22,28 +25,33 @@ def engine(file_path):
     elif 'PE32' in signature :
         return Analyze_PE.analyze_PE_32(file_path)
     else :
-        print("Not Executable file!")
+        raise AttributeError("Not Executable File : '%s'" % file_path)
 
+        
 def get_opt(opt):
     opt_list = ['-j', '-c', '-p', '-y']
+ 
+    if opt not in opt_list :
+        if bool(re.match('^-+\D', opt)) == True:
+            raise TypeError("Invalid Option : '%s'" % opt)
+        else:
+            raise OSError("No such file or directory: : '%s'" % opt)
 
-    if opt in opt_list :
-        return opt
-    else :
-        print("[Error] Wrong options")
-        man()
-        return sys.exit(1)
-
+    return opt
+    
 def man():
-    print("\n>> useage <<")
-    print(" python checksec.py [option] [file1] [file2] ...\n")
+    print("\n>> usage <<")
+    print("1. Output to console : ")
+    print("\tpython checksec.py [file1] [file2] ...\n")
+    print("2. Output to file : ")
+    print("\tpython checksec.py [option] [file1] [file2] ...\n")
 
     print(">> options <<")
     print(" \'-j\' : json")
     print(" \'-c\' : csv")
     print(" \'-p\' : console")
     print(" \'-y\' : yaml")
-
+    
 def output(opt,DataFrame):
     Datas=DataFrame.get_DataFrame()
     filename=Datas.Filename[0]
@@ -80,25 +88,33 @@ def output(opt,DataFrame):
         else:
             print('test')
 
-
-def main():
-    if len(sys.argv) < 3 :
+def init(): 
+    if len(sys.argv) < 2 :
         #add man page
         man()
         sys.exit(1)
+    elif os.path.isfile(sys.argv[1]) is True :
+        opt = '-p'
+        for file_path in sys.argv[1:]:
+            #print file_names
+            print(file_path)
+            DataFrame = engine(file_path)
+            output(opt, DataFrame)
+    else :
+        opt = get_opt(sys.argv[1])
 
-    #option
-    opt = get_opt(sys.argv[1])
-
-    for file_path in sys.argv[2:]:
-        #print file_names
-        print(file_path)
-        engine(file_path)
-
+        for file_path in sys.argv[2:]:
+            #print file_names
+            print(file_path)
+            DataFrame = engine(file_path)
+            output(opt, DataFrame)
+            
+def main():
+    
+    init()
     #analysis result
-    DataFrame = engine(file_path)
-    output(opt, DataFrame)
-
+    #DataFrame = engine(file_path)
+    #output(opt, DataFrame)
 
 
 if __name__ == '__main__':
