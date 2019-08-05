@@ -29,12 +29,12 @@ def engine(file_path):
 
         
 def get_opt(opt):
-    opt_list = ['-j', '-c', '-p', '-y']
+    opt_list = ['-j', '-c', '-y']
  
-    if opt not in opt_list :
-        if bool(re.match('^-+\D', opt)) == True:
+    if opt not in opt_list :                            #옵션 패턴 검사 
+        if bool(re.match('^-+\D', opt)) == True:        #"-문자" 패턴이면 옵션으로 에러 처리
             raise TypeError("Invalid Option : '%s'" % opt)
-        else:
+        else:                                           #아니면 파일 경로 에러처리
             raise OSError("No such file or directory: : '%s'" % opt)
 
     return opt
@@ -93,14 +93,14 @@ def init():
         #add man page
         man()
         sys.exit(1)
-    elif os.path.isfile(sys.argv[1]) is True :
+    elif os.path.isfile(sys.argv[1]) is True : # 옵션 안줬을 때 콘솔로 출력
         opt = '-p'
         for file_path in sys.argv[1:]:
             #print file_names
             print(file_path)
             DataFrame = engine(file_path)
             output(opt, DataFrame)
-    else :
+    else :                                      #옵션 줬을 때 타입 검사 후 출력
         opt = get_opt(sys.argv[1])
 
         for file_path in sys.argv[2:]:
