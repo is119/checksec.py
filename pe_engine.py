@@ -17,7 +17,9 @@ class PeCheckSec(pefile.PE):
     def __init__(self, file_path):
         """
         # TODO:  https://github.com/trailofbits/winchecksec/blob/dbebe0b9d8aec69dbfac98aeb1ba5d525d97e312/Checksec.cpp#L61
-        #  이 부분 if 문으로 할 필요 있는지 확인
+        # TODO : https://github.com/trailofbits/winchecksec/blob/dbebe0b9d8aec69dbfac98aeb1ba5d525d97e312/Checksec.cpp#L70
+        # TODO : https://github.com/trailofbits/winchecksec/blob/dbebe0b9d8aec69dbfac98aeb1ba5d525d97e312/Checksec.cpp#L82
+        # 테스트 결과, 대부분의 파일에서 에러 발생하여 안하기로 결정
 
         Create a new PeCheckSec instance.
 
@@ -41,12 +43,13 @@ class PeCheckSec(pefile.PE):
                 self.OPTIONAL_HEADER.DATA_DIRECTORY[14]
         # 14 : IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR
 
-        image_load_config_directory = \
+        __image_load_config_directory = \
             self.OPTIONAL_HEADER.DATA_DIRECTORY[10]
+        # 10 : IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG
 
         self.__load_config = self.parse_directory_load_config(
-            image_load_config_directory.VirtualAddress,
-            image_load_config_directory.Size
+            __image_load_config_directory.VirtualAddress,
+            __image_load_config_directory.Size
         ).struct
 
     def is_dot_net(self):
@@ -87,10 +90,11 @@ class PeCheckSec(pefile.PE):
     def is_rfg(self):
         """
         # TODO : https://github.com/trailofbits/winchecksec/blob/dbebe0b9d8aec69dbfac98aeb1ba5d525d97e312/Checksec.cpp#L205
-        위 조건문 꼭 있어야 하는 지 확인!
+        이것도 거의 대부분의 파일에서 에러가 발생한다. 따라서 생략했다.
 
-        :return:
+        :return: GuardFlags의 값을 특정 값과 비교하여 RFG 여부 확인
         """
+        assert self.__load_config.Size
         return bool(self.__load_config.GuardFlags & 0x00020000)\
             and bool(self.__load_config.GuardFlags & 0x00040000)\
             or bool(self.__load_config.GuardFlags & 0x00080000)
@@ -98,6 +102,7 @@ class PeCheckSec(pefile.PE):
     def is_safe_seh(self):
         """
         # TODO : https://github.com/trailofbits/winchecksec/blob/dbebe0b9d8aec69dbfac98aeb1ba5d525d97e312/Checksec.cpp#L218
+        이것도 거의 대부분의 파일에서 에러가 발생한다. 따라서 생략했다.
         :return:
         """
         return self.is_seh() and self.__load_config.SEHandlerTable != 0\
@@ -133,18 +138,6 @@ class PeCheckSec(pefile.PE):
         res_data_frame.add_row(result_list)
         return res_data_frame
 
-
-# 입력부
-# def input_file(file_path = r"/"):
-#     pe = None
-#     pe = pefile.PE(file_path)
-#     if pe is None:
-#         return FileNotFoundError
-#     else:
-#         return pe
-
-# def get_file_name(file_path=None):
-#     return file_path[file_path.rfind('\\')+1:]
 
 if __name__ == "__main__":
 
