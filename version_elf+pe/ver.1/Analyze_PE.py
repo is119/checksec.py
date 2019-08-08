@@ -1,6 +1,8 @@
+#-*- coding:utf-8 -*-
+
+#module edit
 import pefile
-from result_output import Result_DataFrame
-from result_output import output
+from Result_DataFrame import *
 
 # column_name = ['file_name', 'DotNET', 'NX', 'SEH']
 # column_name = ['file_name', 'DotNET']
@@ -33,6 +35,9 @@ class PeCheckSec(pefile.PE):
         :attribute __load_config : get image_load_config_directory's information
         """
         super().__init__(file_path)
+
+#edit - add self.file_path = file_path
+        self.file_path = file_path
 
         self.__image_characteristics = self.FILE_HEADER.Characteristics
 
@@ -111,17 +116,20 @@ class PeCheckSec(pefile.PE):
     def is_gs(self):
         return self.__load_config.SecurityCookie != 0
 
+#edit - add Filename
     def convert_2_result_data_frame(self):
         res_data_frame = Result_DataFrame()
         res_data_frame.create_DataFrame(
             [
-                ".NET", "NX", "Dynamic Base", "ASLR", "CFG",
+                "Filename",".NET", "NX", "Dynamic Base", "ASLR", "CFG",
                 "Force Integrity", "GS", "High Entropy VA", "Isolation",
                 "RFG", "Safe SEH"
             ]
         )
 
+#edit - add self.file_path
         result_list = [
+            self.file_path,
             self.is_dot_net(),
             self.is_nx(),
             self.is_dynamic_base(),
@@ -139,12 +147,13 @@ class PeCheckSec(pefile.PE):
         return res_data_frame
 
 
-if __name__ == "__main__":
+def analyze_PE_32(file_path):
 
     # PE 파일 세팅
-    file_path = input("Input file path : ")
     pe = PeCheckSec(file_path)
+    return pe.convert_2_result_data_frame()
 
+'''
     print("is .NET ? ", pe.is_dot_net())
     print("is NX ? ", pe.is_nx())
     print("is SEH ? ", pe.is_seh())
@@ -162,9 +171,13 @@ if __name__ == "__main__":
     output('-c', DataFrame)
     output('-p', DataFrame)
     output('-j', DataFrame)
-
+'''
     #
     # file_name = get_file_name(file_path)
     # OutputDataObject.add_row([str(file_name), str(is_DotNet(pe)), str(is_NX(pe)), str(is_SEH(pe))])
 
     ######################
+
+#PE64는 따로 추가 구현이 필요
+def analyze_PE_64(file_path):
+    return ""
