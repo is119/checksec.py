@@ -2,11 +2,8 @@
 from elftools.elf.elffile import ELFFile
 from elftools.elf.sections import SymbolTableSection
 from Result_DataFrame import *
+from elftools.elf.dynamic import DynamicSection
 import sys
-
-#must edit!
-import canary
-import NX
 
 #   >> check memory protector <<
 
@@ -49,10 +46,34 @@ def is_PIE(elf):
         print('[Error] Not executable ELF file')
         sys.exit(1)
 
-def is_RELRO(elf):
-    #return string (3 type)
-    return "RELRO"
 
+#is_RELRO : must add 64bit partitial
+def is_RELRO(elf):
+ # Is it relro?
+	for segment in elf.iter_segments():
+	    have_segment = segment['p_type']
+
+	# Relro vs No Relro
+	have_Relro = False
+	if "PT_GNU_RELRO" in have_segment:
+	    have_Relro = True
+	else:
+	    return "No Relo"
+
+	key = "DT_BIND_NOW"
+	whatrelro = ""
+ 	# FULL RELRO vs PARTAL RELR
+	if have_Relro:
+		for section in elf.iter_sections():
+		# print(DynamicSection)
+			if type(section) is DynamicSection:
+				for tag in section.iter_tags():
+					if tag.entry.d_tag == key:
+						whatrelro = 'Full Relro'
+						break
+					else:
+						whatrelro ='Partial Relro'
+		return whatrelro
 
 #   >> analyze <<
 
@@ -62,13 +83,13 @@ def analyze_ELF_32(filename):
     elf = ELFFile(f)
     elf_type = elf.header['e_type']
 
-    #결과를 저장할 데이터 프레임 생성
+    #create dataframe for Analysis
     columns=['Filename', 'CANARY', 'NX', 'PIE', 'RELRO']
     resultTable = Result_DataFrame()
     resultTable.create_DataFrame(columns)
 
 
-    #적용된 메모리 보호 기법 분석 (예시. 추가 조사 필요)
+    #analyze memory protector in elf
     resultlist=[]
     resultlist.append(filename)
     resultlist.append((lambda x : 'O' if x else 'X')(is_CANARY(elf)))
@@ -76,7 +97,7 @@ def analyze_ELF_32(filename):
     resultlist.append(is_PIE(elf))
     resultlist.append(is_RELRO(elf))
 
-    #데이터프레임에 결과를 저장 및 return
+    #save Analysis result and return
     f.close()
     resultTable.add_row(resultlist)
     return resultTable

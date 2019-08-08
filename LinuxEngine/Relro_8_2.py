@@ -4,7 +4,9 @@ from elftools.elf.dynamic import *
 
 def main():
 
-    f = open('sample\\RELRO\\relro_partitial64','rb')
+    f = open('..\\sample\\RELRO\\relro_full32','rb')
+    #f = open('..\\sample\\RELRO\\relro_no32','rb')
+    #f = open('..\\sample\\RELRO\\relro_partitial32','rb')
     elf = ELFFile(f)
 
     # Is it relro?

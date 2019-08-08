@@ -13,7 +13,7 @@ import yaml, json
 
 def engine(file_path):
     #analyze magic_number
-    
+
     signature = magic.from_file(file_path)
 
     if 'ELF 32-bit' in signature :
@@ -27,18 +27,18 @@ def engine(file_path):
     else :
         raise AttributeError("Not Executable File : '%s'" % file_path)
 
-        
+
 def get_opt(opt):
     opt_list = ['-j', '-c', '-y']
- 
-    if opt not in opt_list :                            #옵션 패턴 검사 
-        if bool(re.match('^-+\D', opt)) == True:        #"-문자" 패턴이면 옵션으로 에러 처리
+
+    if opt not in opt_list :                            #option pattern
+        if bool(re.match('^-+\D', opt)) == True:        #if "-option" -> option
             raise TypeError("Invalid Option : '%s'" % opt)
-        else:                                           #아니면 파일 경로 에러처리
+        else:                                           #else fileroute
             raise OSError("No such file or directory: : '%s'" % opt)
 
     return opt
-    
+
 def man():
     print("\n>> usage <<")
     print("1. Output to console : ")
@@ -51,7 +51,7 @@ def man():
     print(" \'-c\' : csv")
     print(" \'-p\' : console")
     print(" \'-y\' : yaml")
-    
+
 def output(opt,DataFrame):
     Datas=DataFrame.get_DataFrame()
     filename=Datas.Filename[0]
@@ -88,19 +88,19 @@ def output(opt,DataFrame):
         else:
             print('test')
 
-def init(): 
+def init():
     if len(sys.argv) < 2 :
         #add man page
         man()
         sys.exit(1)
-    elif os.path.isfile(sys.argv[1]) is True : # 옵션 안줬을 때 콘솔로 출력
+    elif os.path.isfile(sys.argv[1]) is True : #no option -> console
         opt = '-p'
         for file_path in sys.argv[1:]:
             #print file_names
             print(file_path)
             DataFrame = engine(file_path)
             output(opt, DataFrame)
-    else :                                      #옵션 줬을 때 타입 검사 후 출력
+    else :                                      #option -> type
         opt = get_opt(sys.argv[1])
 
         for file_path in sys.argv[2:]:
@@ -108,9 +108,9 @@ def init():
             print(file_path)
             DataFrame = engine(file_path)
             output(opt, DataFrame)
-            
+
 def main():
-    
+
     init()
     #analysis result
     #DataFrame = engine(file_path)
