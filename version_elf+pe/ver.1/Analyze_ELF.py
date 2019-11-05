@@ -90,10 +90,11 @@ def analyze_ELF_32(filename):
 
 
     #analyze memory protector in elf
+	#edit - return true/false
     resultlist=[]
     resultlist.append(filename)
-    resultlist.append((lambda x : 'O' if x else 'X')(is_CANARY(elf)))
-    resultlist.append((lambda x : 'O' if x else 'X')(is_NX(elf)))
+    resultlist.append(is_CANARY(elf))
+    resultlist.append(is_NX(elf))
     resultlist.append(is_PIE(elf))
     resultlist.append(is_RELRO(elf))
 

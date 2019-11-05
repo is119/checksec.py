@@ -13,8 +13,12 @@ import yaml, json
 
 def engine(file_path):
     #analyze magic_number
-
-    signature = magic.from_file(file_path)
+    #edit - no file error
+    try:
+        signature = magic.from_file(file_path)
+    except IOError:
+            print(file_path + 'is not exist!')
+            exit(0)
 
     if 'ELF 32-bit' in signature :
         return Analyze_ELF.analyze_ELF_32(file_path)
@@ -53,8 +57,10 @@ def man():
     print(" \'-y\' : yaml")
 
 def output(opt,DataFrame):
+
     Datas=DataFrame.get_DataFrame()
     filename=Datas.Filename[0]
+
     try:
         if opt=='-j':
             jstring=json.dumps(Datas.to_json(orient='split'), indent=4)
@@ -68,7 +74,9 @@ def output(opt,DataFrame):
 
         elif opt=='-p':
             Datas=DataFrame.get_DataFrame()
-            print(Datas)
+            #edit - without index
+            print(Datas.to_string(index=False))
+            print()
 
         elif opt=='-y':
             with open(filename+'_Yaml.yaml', 'w') as yamlfile:
@@ -97,7 +105,8 @@ def init():
         opt = '-p'
         for file_path in sys.argv[1:]:
             #print file_names
-            print(file_path)
+            #edit-print file
+            print("[FILE] " + file_path)
             DataFrame = engine(file_path)
             output(opt, DataFrame)
     else :                                      #option -> type
@@ -105,7 +114,8 @@ def init():
 
         for file_path in sys.argv[2:]:
             #print file_names
-            print(file_path)
+            #edit-print file
+            print("[FILE] " + file_path)
             DataFrame = engine(file_path)
             output(opt, DataFrame)
 
