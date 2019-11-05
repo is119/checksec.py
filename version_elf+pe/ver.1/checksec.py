@@ -6,6 +6,8 @@ import re
 import Result_DataFrame
 import Analyze_PE
 import Analyze_ELF
+#edit - here
+from auth_mem import authmem
 #Output
 #import numpy as np
 import pandas as pd
@@ -25,8 +27,12 @@ def engine(file_path):
     elif 'ELF 64-bit' in signature :
         return Analyze_ELF.analyze_ELF_64(file_path)
     elif 'PE32+' in signature :
+        #edit-sumin test code
+        authmem(file_path)
         return Analyze_PE.analyze_PE_64(file_path)
     elif 'PE32' in signature :
+        #edit-sumin test code
+        authmem(file_path)
         return Analyze_PE.analyze_PE_32(file_path)
     else :
         raise AttributeError("Not Executable File : '%s'" % file_path)
