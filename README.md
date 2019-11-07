@@ -2,7 +2,7 @@
 2019_KUCIS_Project - checksec.py
 
 모든 작업은 Development 브랜치에서 진행해주세요
-* pull request를 애용해주세요ㅎㅎ
+> pull request를 애용해주세요ㅎㅎ
 
 * sample : 테스트 실행파일 (elf, pe)
 * version_edit_for_linux : elf 구현을 위한 디렉토리
