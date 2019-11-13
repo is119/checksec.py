@@ -2,11 +2,26 @@
 
 #module edit
 import pefile
-from Result_DataFrame import *
+from Result_DataFrame import Result_DataFrame
 
 # column_name = ['file_name', 'DotNET', 'NX', 'SEH']
 # column_name = ['file_name', 'DotNET']
 
+IMAGE_LIBRARY_PROCESS_INIT = 0x0001
+IMAGE_LIBRARY_PROCESS_TERM = 0x0002
+IMAGE_LIBRARY_THREAD_INIT = 0x0004
+IMAGE_LIBRARY_THREAD_TERM = 0x0008
+IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA = 0x0020
+IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE = 0x0040
+IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY = 0x0080
+IMAGE_DLLCHARACTERISTICS_NX_COMPAT = 0x0100
+IMAGE_DLLCHARACTERISTICS_NO_ISOLATION = 0x0200
+IMAGE_DLLCHARACTERISTICS_NO_SEH = 0x0400
+IMAGE_DLLCHARACTERISTICS_NO_BIND = 0x0800
+IMAGE_DLLCHARACTERISTICS_APPCONTAINER = 0x1000
+IMAGE_DLLCHARACTERISTICS_WDM_DRIVER = 0x2000
+IMAGE_DLLCHARACTERISTICS_GUARD_CF = 0x4000
+IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE = 0x8000
 
 class PeCheckSec(pefile.PE):
     """
@@ -61,16 +76,13 @@ class PeCheckSec(pefile.PE):
         return self.__clr_config.VirtualAddress != 0
 
     def is_nx(self):
-        return not (self.__dll_characteristics & self.OPTIONAL_HEADER
-                    .IMAGE_DLLCHARACTERISTICS_NO_ISOLATION)
+        return not (self.__dll_characteristics & IMAGE_DLLCHARACTERISTICS_NO_ISOLATION)
 
     def is_seh(self):
-        return not (self.__dll_characteristics & self.OPTIONAL_HEADER
-                    .IMAGE_DLLCHARACTERISTICS_NO_SEH)
+        return not (self.__dll_characteristics & IMAGE_DLLCHARACTERISTICS_NO_SEH)
 
     def is_dynamic_base(self):
-        return not (self.__dll_characteristics & self.OPTIONAL_HEADER
-                    .IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE)
+        return bool(self.__dll_characteristics & IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE)
 
     def is_aslr(self):
         return (not(self.__image_characteristics & self.FILE_HEADER
@@ -81,16 +93,13 @@ class PeCheckSec(pefile.PE):
         return bool(self.__dll_characteristics & 0x20) and self.is_aslr()
 
     def is_force_integrity(self):
-        return not(self.__dll_characteristics & self.OPTIONAL_HEADER
-                   .IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY)
+        return bool(self.__dll_characteristics & IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY)
 
     def is_isolation(self):
-        return not(self.__dll_characteristics & self.OPTIONAL_HEADER
-                   .IMAGE_DLLCHARACTERISTICS_NO_ISOLATION)
+        return not(self.__dll_characteristics & IMAGE_DLLCHARACTERISTICS_NO_ISOLATION)
 
     def is_cfg(self):
-        return not(self.__dll_characteristics & self.OPTIONAL_HEADER
-                   .IMAGE_DLLCHARACTERISTICS_GUARD_CF)
+        return bool(self.__dll_characteristics & IMAGE_DLLCHARACTERISTICS_GUARD_CF)
 
     def is_rfg(self):
         """
@@ -110,8 +119,7 @@ class PeCheckSec(pefile.PE):
         이것도 거의 대부분의 파일에서 에러가 발생한다. 따라서 생략했다.
         :return:
         """
-        return self.is_seh() and self.__load_config.SEHandlerTable != 0\
-            and self.__load_config.SEHandlerCount != 0
+        return self.is_seh() and self.__load_config.SEHandlerTable != 0 and self.__load_config.SEHandlerCount != 0
 
     def is_gs(self):
         return self.__load_config.SecurityCookie != 0
@@ -123,7 +131,7 @@ class PeCheckSec(pefile.PE):
             [
                 "Filename",".NET", "NX", "Dynamic Base", "ASLR", "CFG",
                 "Force Integrity", "GS", "High Entropy VA", "Isolation",
-                "RFG", "Safe SEH"
+                "RFG", "SEH", "Safe SEH"
             ]
         )
 
@@ -140,6 +148,7 @@ class PeCheckSec(pefile.PE):
             self.is_high_entropy_va(),
             self.is_isolation(),
             self.is_rfg(),
+            self.is_seh(),
             self.is_safe_seh()
         ]
 
