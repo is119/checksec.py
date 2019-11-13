@@ -189,4 +189,5 @@ def analyze_PE_32(file_path):
 
 #PE64는 따로 추가 구현이 필요
 def analyze_PE_64(file_path):
-    return ""
+    pe = PeCheckSec(file_path)
+    return pe.convert_2_result_data_frame()
