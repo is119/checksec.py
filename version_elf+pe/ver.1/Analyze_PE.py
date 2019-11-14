@@ -56,20 +56,20 @@ class PeCheckSec:
         IMAGE_GUARD_RF_INSTRUMENTED = 0x20000
         IMAGE_GUARD_RF_ENABLE = 0x40000
         IMAGE_GUARD_RF_STRICT = 0x80000
-        return self._load_config.GuardFlags & IMAGE_GUARD_RF_INSTRUMENTED and (
+        return bool(self._load_config.GuardFlags & IMAGE_GUARD_RF_INSTRUMENTED) and bool(
             self._load_config.GuardFlags & IMAGE_GUARD_RF_ENABLE or self._load_config.GuardFlags & IMAGE_GUARD_RF_STRICT)
 
     def is_safe_seh(self):
         # if self._load_config.Size < 112:
         #     print('Warn: no or short load config, assuming no SafeSEH')
         #     return False
-        return self.is_seh() and self._load_config.SEHandlerTable and self._load_config.SEHandlerCount
+        return self.is_seh() and self._load_config.SEHandlerTable != 0 and self._load_config.SEHandlerCount != 0
 
     def is_gs(self):
         # if self._load_config.Size < 96:
         #     print('Warn: Warn: no or short load config, assuming no GS')
         #     return False
-        return bool(self._load_config.SecurityCookie)
+        return self._load_config.SecurityCookie != 0
 
     def convert_2_result_data_frame(self):
         res_data_frame = Result_DataFrame()
@@ -97,11 +97,6 @@ class PeCheckSec:
         return res_data_frame
 
 
-def analyze_PE_32(file_path):
-    pe = PeCheckSec(file_path)
-    return pe.convert_2_result_data_frame()
-
-
-def analyze_PE_64(file_path):
+def analyze_PE(file_path):
     pe = PeCheckSec(file_path)
     return pe.convert_2_result_data_frame()
