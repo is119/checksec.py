@@ -123,7 +123,7 @@ def init():
                     DataFrame = engine(file_path)
                     output(opt, DataFrame)
     except OSError:
-        print("Can`t find File : \""+file_path+"\".")
+        print("Can`t find File!")
         exit(1)
 
     except AttributeError:
