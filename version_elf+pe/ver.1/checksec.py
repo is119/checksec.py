@@ -15,12 +15,7 @@ import yaml, json
 
 def engine(file_path):
     #analyze magic_number
-    #edit - no file error
-    try:
-        signature = magic.from_file(file_path)
-    except IOError:
-            print(file_path + 'is not exist!')
-            exit(0)
+    signature = magic.from_file(file_path)
 
     if 'ELF 32-bit' in signature :
         return Analyze_ELF.analyze_ELF_32(file_path)
@@ -35,7 +30,7 @@ def engine(file_path):
         authmem(file_path)
         return Analyze_PE.analyze_PE_32(file_path)
     else :
-        raise AttributeError("Not Executable File : '%s'" % file_path)
+        raise AttributeError
 
 
 def get_opt(opt):
@@ -43,9 +38,9 @@ def get_opt(opt):
 
     if opt not in opt_list :                            #option pattern
         if bool(re.match('^-+\D', opt)) == True:        #if "-option" -> option
-            raise TypeError("Invalid Option : '%s'" % opt)
+            raise TypeError
         else:                                           #else fileroute
-            raise OSError("No such file or directory: : '%s'" % opt)
+            raise OSError
 
     return opt
 
@@ -103,27 +98,41 @@ def output(opt,DataFrame):
             print('test')
 
 def init():
-    if len(sys.argv) < 2 :
-        #add man page
-        man()
-        sys.exit(1)
-    elif os.path.isfile(sys.argv[1]) is True : #no option -> console
-        opt = '-p'
-        for file_path in sys.argv[1:]:
-            #print file_names
-            #edit-print file
-            print("[FILE] " + file_path)
-            DataFrame = engine(file_path)
-            output(opt, DataFrame)
-    else :                                      #option -> type
-        opt = get_opt(sys.argv[1])
+    try:
+        if len(sys.argv) < 2 :
+            #add man page
+            man()
+            sys.exit(0)
+        elif os.path.isfile(sys.argv[1]) is True : #no option -> console
 
-        for file_path in sys.argv[2:]:
-            #print file_names
-            #edit-print file
-            print("[FILE] " + file_path)
-            DataFrame = engine(file_path)
-            output(opt, DataFrame)
+            opt = '-p'
+            for file_path in sys.argv[1:]:
+                #print file_names
+                #edit-print file
+                print("[FILE] " + file_path)
+                DataFrame = engine(file_path)
+                output(opt, DataFrame)
+        else :                                      #option -> type
+
+                opt = get_opt(sys.argv[1])
+
+                for file_path in sys.argv[2:]:
+                    #print file_names
+                    #edit-print file
+                    print("[FILE] " + file_path)
+                    DataFrame = engine(file_path)
+                    output(opt, DataFrame)
+    except OSError:
+        print("Can`t find File : \""+file_path+"\".")
+        exit(1)
+
+    except AttributeError:
+        print("Not Executable File!")
+        exit(1)
+
+    except TypeError:
+        print("Invalid Option!")
+        exit(1)
 
 def main():
 
