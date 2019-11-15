@@ -50,30 +50,48 @@ def is_PIE(elf):
 #is_RELRO : must add 64bit partitial
 def is_RELRO(elf):
  # Is it relro?
-	for segment in elf.iter_segments():
-	    have_segment = segment['p_type']
+    #32
+    seglist = []
+    for segment in elf.iter_segments():
+        have_segment = segment['p_type']
+        seglist.append(have_segment)
 
-	# Relro vs No Relro
-	have_Relro = False
-	if "PT_GNU_RELRO" in have_segment:
-	    have_Relro = True
-	else:
-	    return "No Relo"
+    # Relro vs No Relro
+    have_Relro = False
+    for have_segment in seglist:
+        if "PT_GNU_RELRO" in have_segment:
+            have_Relro = True
+        else:
+            have_Relro = False
 
-	key = "DT_BIND_NOW"
-	whatrelro = ""
- 	# FULL RELRO vs PARTAL RELR
-	if have_Relro:
-		for section in elf.iter_sections():
-		# print(DynamicSection)
-			if type(section) is DynamicSection:
-				for tag in section.iter_tags():
-					if tag.entry.d_tag == key:
-						whatrelro = 'Full Relro'
-						break
-					else:
-						whatrelro ='Partial Relro'
-		return whatrelro
+    if have_Relro == False:
+        return "No Relo"
+
+    key = "DT_BIND_NOW"
+    whatrelro = ""
+
+    # FULL RELRO vs PARTAL RELR
+    if have_Relro:
+        for section in elf.iter_sections():
+
+            if type(section) is DynamicSection:
+                print(">> ", section)
+                print(">> ", DynamicSection)
+                print(">>>", type(section)," === ", DynamicSection)
+                for tag in section.iter_tags():
+                    print("tag : ",tag)
+                    if tag.entry.d_tag == key:
+                        print("entry : ",tag.entry)
+                        print("d_tag : ",tag.entry.d_tag)
+
+                        #d_tag : 64bit
+                        print("d_tag type : ", type(tag.entry.d_tag))
+                        whatrelro = 'Full Relro'
+                        break
+                    else:
+                        whatrelro ='Partial Relro'
+
+        return whatrelro
 
 #   >> analyze <<
 
