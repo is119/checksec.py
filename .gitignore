@@ -6,4 +6,5 @@ __pycache__/
 
 *.py
 
-version_elf+pe/ver.1/sumin_test
+version_elf+pe/ver.1/sample/*
+version_elf+pe/ver.1/sumin_test/*

@@ -75,17 +75,8 @@ def is_RELRO(elf):
         for section in elf.iter_sections():
 
             if type(section) is DynamicSection:
-                print(">> ", section)
-                print(">> ", DynamicSection)
-                print(">>>", type(section)," === ", DynamicSection)
                 for tag in section.iter_tags():
-                    print("tag : ",tag)
                     if tag.entry.d_tag == key:
-                        print("entry : ",tag.entry)
-                        print("d_tag : ",tag.entry.d_tag)
-
-                        #d_tag : 64bit
-                        print("d_tag type : ", type(tag.entry.d_tag))
                         whatrelro = 'Full Relro'
                         break
                     else:
@@ -123,4 +114,26 @@ def analyze_ELF_32(filename):
 
 
 def analyze_ELF_64(filename):
-    pass
+    # open file
+    f = open(filename, 'rb')
+    elf = ELFFile(f)
+    elf_type = elf.header['e_type']
+
+    # create dataframe for Analysis
+    columns = ['Filename', 'CANARY', 'NX', 'PIE', 'RELRO']
+    resultTable = Result_DataFrame()
+    resultTable.create_DataFrame(columns)
+
+    # analyze memory protector in elf
+    # edit - return true/false
+    resultlist = []
+    resultlist.append(filename)
+    resultlist.append(is_CANARY(elf))
+    resultlist.append(is_NX(elf))
+    resultlist.append(is_PIE(elf))
+    resultlist.append(is_RELRO(elf))
+
+    # save Analysis result and return
+    f.close()
+    resultTable.add_row(resultlist)
+    return resultTable
