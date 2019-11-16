@@ -159,44 +159,21 @@ class PeCheckSec:
         WinVerifyTrust(0, ctypes.byref(policy_guid), ctypes.byref(trust_data))
         return status == ERROR_SUCCESS
 
-    def convert_2_result_data_frame(self):
-        res_data_frame = Result_DataFrame()
-        res_data_frame.create_DataFrame([
-            'Filename',
-            '.NET',
-            'NX',
-            'Dynamic Base',
-            'ASLR',
-            'High Entropy VA',
-            'Force Integrity',
-            'Isolation',
-            'SEH',
-            'SafeSEH',
-            'GS',
-            'RFG',
-            'CFG',
-            'Authenticode'
-        ])
-        result_list = [
-            self._file_path,
-            self.is_dotnet(),
-            self.is_nx(),
-            self.is_dynamic_base(),
-            self.is_aslr(),
-            self.is_high_entropy_va(),
-            self.is_force_integrity(),
-            self.is_isolation(),
-            self.is_seh(),
-            self.is_safe_seh(),
-            self.is_gs(),
-            self.is_rfg(),
-            self.is_cfg(),
-            self.is_authenticode()
-        ]
-        res_data_frame.add_row(result_list)
-        return res_data_frame
-
 
 def analyze_PE(file_path):
     pe = PeCheckSec(file_path)
-    return pe.convert_2_result_data_frame()
+    return {
+        '.NET': pe.is_dotnet(),
+        'NX': pe.is_nx(),
+        'Dynamic Base': pe.is_dynamic_base(),
+        'ASLR': pe.is_aslr(),
+        'High Entropy VA': pe.is_high_entropy_va(),
+        'Force Integrity': pe.is_force_integrity(),
+        'Isolation': pe.is_isolation(),
+        'SEH': pe.is_seh(),
+        'SafeSEH': pe.is_safe_seh(),
+        'GS': pe.is_gs(),
+        'RFG': pe.is_rfg(),
+        'CFG': pe.is_cfg(),
+        'Authenticode': pe.is_authenticode()
+    }
