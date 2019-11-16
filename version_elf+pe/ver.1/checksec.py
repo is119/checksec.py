@@ -10,13 +10,8 @@ import Analyze_PE
 
 
 def engine(file_path):
-    # analyze magic_number
-    # edit - no file error
-    try:
-        signature = magic.from_file(file_path)
-    except IOError:
-        print(file_path + 'is not exist!')
-        exit(0)
+    #analyze magic_number
+    signature = magic.from_file(file_path)
 
     if 'ELF 32-bit' in signature:
         return Analyze_ELF.analyze_ELF_32(file_path)

@@ -50,30 +50,39 @@ def is_PIE(elf):
 #is_RELRO : must add 64bit partitial
 def is_RELRO(elf):
  # Is it relro?
-	for segment in elf.iter_segments():
-	    have_segment = segment['p_type']
+    #32
+    seglist = []
+    for segment in elf.iter_segments():
+        have_segment = segment['p_type']
+        seglist.append(have_segment)
 
-	# Relro vs No Relro
-	have_Relro = False
-	if "PT_GNU_RELRO" in have_segment:
-	    have_Relro = True
-	else:
-	    return "No Relo"
+    # Relro vs No Relro
+    have_Relro = False
+    for have_segment in seglist:
+        if "PT_GNU_RELRO" in have_segment:
+            have_Relro = True
+        else:
+            have_Relro = False
 
-	key = "DT_BIND_NOW"
-	whatrelro = ""
- 	# FULL RELRO vs PARTAL RELR
-	if have_Relro:
-		for section in elf.iter_sections():
-		# print(DynamicSection)
-			if type(section) is DynamicSection:
-				for tag in section.iter_tags():
-					if tag.entry.d_tag == key:
-						whatrelro = 'Full Relro'
-						break
-					else:
-						whatrelro ='Partial Relro'
-		return whatrelro
+    if have_Relro == False:
+        return "No Relo"
+
+    key = "DT_BIND_NOW"
+    whatrelro = ""
+
+    # FULL RELRO vs PARTAL RELR
+    if have_Relro:
+        for section in elf.iter_sections():
+
+            if type(section) is DynamicSection:
+                for tag in section.iter_tags():
+                    if tag.entry.d_tag == key:
+                        whatrelro = 'Full Relro'
+                        break
+                    else:
+                        whatrelro ='Partial Relro'
+
+        return whatrelro
 
 #   >> analyze <<
 
@@ -105,4 +114,26 @@ def analyze_ELF_32(filename):
 
 
 def analyze_ELF_64(filename):
-    pass
+    # open file
+    f = open(filename, 'rb')
+    elf = ELFFile(f)
+    elf_type = elf.header['e_type']
+
+    # create dataframe for Analysis
+    columns = ['Filename', 'CANARY', 'NX', 'PIE', 'RELRO']
+    resultTable = Result_DataFrame()
+    resultTable.create_DataFrame(columns)
+
+    # analyze memory protector in elf
+    # edit - return true/false
+    resultlist = []
+    resultlist.append(filename)
+    resultlist.append(is_CANARY(elf))
+    resultlist.append(is_NX(elf))
+    resultlist.append(is_PIE(elf))
+    resultlist.append(is_RELRO(elf))
+
+    # save Analysis result and return
+    f.close()
+    resultTable.add_row(resultlist)
+    return resultTable
