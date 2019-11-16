@@ -1,7 +1,6 @@
 #-*-coding: utf-8-*-
 from elftools.elf.elffile import ELFFile
 from elftools.elf.sections import SymbolTableSection
-from Result_DataFrame import *
 from elftools.elf.dynamic import DynamicSection
 import sys
 
