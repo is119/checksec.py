@@ -23,8 +23,9 @@ def engine(file_path):
     elif 'ELF 64-bit' in signature:
         return Analyze_ELF.analyze_ELF_64(file_path)
     elif signature.startswith('PE32'):
+        #edit-sumin test code
+        # authmem(file_path)
         return Analyze_PE.analyze_PE(file_path)
-    else:
         raise AttributeError("Not Executable File : '%s'" % file_path)
 
 
