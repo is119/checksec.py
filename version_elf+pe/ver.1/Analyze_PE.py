@@ -135,59 +135,20 @@ class PeCheckSec(pefile.PE):
             ]
         )
 
-#edit - add self.file_path
-        result_list = [
-            self.file_path,
-            self.is_dot_net(),
-            self.is_nx(),
-            self.is_dynamic_base(),
-            self.is_aslr(),
-            self.is_cfg(),
-            self.is_force_integrity(),
-            self.is_gs(),
-            self.is_high_entropy_va(),
-            self.is_isolation(),
-            self.is_rfg(),
-            self.is_seh(),
-            self.is_safe_seh()
-        ]
 
-        res_data_frame.add_row(result_list)
-        return res_data_frame
-
-
-def analyze_PE_32(file_path):
-
-    # PE 파일 세팅
+def analyze_PE(file_path):
     pe = PeCheckSec(file_path)
-    return pe.convert_2_result_data_frame()
-
-'''
-    print("is .NET ? ", pe.is_dot_net())
-    print("is NX ? ", pe.is_nx())
-    print("is SEH ? ", pe.is_seh())
-    print("is DynamicBase? ", pe.is_dynamic_base())
-    print("is ASLR? ", pe.is_aslr())
-    print("is CFG? ", pe.is_cfg())
-    print("is ForceIntegrity? ", pe.is_force_integrity())
-    print("is GS? ", pe.is_gs())
-    print("is HighEntrophyVA? ", pe.is_high_entropy_va())
-    print("is ISOLATION? ", pe.is_isolation())
-    print("is RFG? ", pe.is_rfg())
-    print("is SafeSEH? ", pe.is_safe_seh())
-
-    DataFrame = pe.convert_2_result_data_frame()
-    output('-c', DataFrame)
-    output('-p', DataFrame)
-    output('-j', DataFrame)
-'''
-    #
-    # file_name = get_file_name(file_path)
-    # OutputDataObject.add_row([str(file_name), str(is_DotNet(pe)), str(is_NX(pe)), str(is_SEH(pe))])
-
-    ######################
-
-#PE64는 따로 추가 구현이 필요
-def analyze_PE_64(file_path):
-    pe = PeCheckSec(file_path)
-    return pe.convert_2_result_data_frame()
+    return {
+        '.net': pe.is_dot_net(),
+        'nx': pe.is_nx(),
+        'dynamic_base': pe.is_dynamic_base(),
+        'aslr': pe.is_aslr(),
+        'cfg':  pe.is_cfg(),
+        'force_integrify': pe.is_force_integrity(),
+        'gs': pe.is_gs(),
+        'high_entropy_va': pe.is_high_entropy_va(),
+        'isolation': pe.is_isolation(),
+        'rfg': pe.is_rfg(),
+        'seh': pe.is_seh(),
+        'safe_seh': pe.is_safe_seh()
+    }
