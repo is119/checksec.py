@@ -1,8 +1,8 @@
 import csv
 import json
 from argparse import ArgumentParser
-
-import magic
+import pefile
+from elftools.elf.elffile import ELFFile
 from tabulate import tabulate
 
 import Analyze_ELF
@@ -11,14 +11,31 @@ import Analyze_PE
 
 def engine(file_path):
     #analyze magic_number
-    signature = magic.from_file(file_path)
+    #edit - no file error
+    try:
+        f = open(file_path, 'rb')
+        identify = f.read(4)
+    except IOError:
+        print(file_path + 'is not exist!')
+        exit(0)
 
-    if 'ELF 32-bit' in signature:
-        return Analyze_ELF.analyze_ELF_32(file_path)
-    elif 'ELF 64-bit' in signature:
-        return Analyze_ELF.analyze_ELF_64(file_path)
-    elif signature.startswith('PE32'):
-        return Analyze_PE.analyze_PE(file_path)
+        #identify elf file
+    if "ELF" in identify:
+        print("elf file")
+        elf = ELFFile(f)
+        #32 bit or 64 bit
+        if elf.elfclass==32:
+            return Analyze_ELF.analyze_ELF_32(file_path)
+        else:
+            return Analyze_ELF.analyze_ELF_64(file_path)
+        #identify pe file
+    elif "MZ" in identify:
+        pe = pefile.PE(file_path)
+        #32bit or 64bit
+        if pe.FILE_HEADER.SizeOfOptionalHeader==224:
+            return Analyze_PE.analyze_PE_32(file_path)
+        else:
+            return Analyze_PE.analyze_PE_64(file_path)
     else:
         raise AttributeError("Not Executable File : '%s'" % file_path)
 
