@@ -1,4 +1,5 @@
 import ctypes
+import platform
 from ctypes.wintypes import BYTE, DWORD, HANDLE, LONG, LPCWSTR, LPVOID, ULONG, USHORT, WCHAR
 
 import pefile
@@ -36,7 +37,7 @@ class PeCheckSec:
 
     def is_aslr(self):
         return not self._pe.FILE_HEADER.IMAGE_FILE_RELOCS_STRIPPED and self.is_dynamic_base() or self.is_dot_net()
-        
+
     def is_high_entropy_va(self):
         return self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA and self.is_aslr()
 
@@ -57,7 +58,7 @@ class PeCheckSec:
 
     def is_gs(self):
         # if self._load_config.Size < 96:
-        #     print('Warn: Warn: no or short load config, assuming no GS')
+        #     print('Warn: no or short load config, assuming no GS')
         #     return False
         return self._load_config.SecurityCookie != 0
 
@@ -75,6 +76,10 @@ class PeCheckSec:
         return self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_GUARD_CF
 
     def is_authenticode(self):
+        if platform.system() != 'Windows':
+            print('Warn: authenticode can only be checked in windows')
+            return False
+
         class GUID(ctypes.Structure):
             _fields_ = [
                 ('Data1', ULONG),
