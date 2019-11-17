@@ -1,10 +1,12 @@
-import ctypes
-import platform
-from ctypes.wintypes import BYTE, DWORD, HANDLE, LONG, LPCWSTR, LPVOID, ULONG, USHORT, WCHAR
+import os
 
 import pefile
 
 from Result_DataFrame import Result_DataFrame
+
+if os.name == 'nt':
+    import ctypes
+    from ctypes.wintypes import BYTE, DWORD, HANDLE, LONG, LPCWSTR, LPVOID, ULONG, USHORT, WCHAR
 
 
 class PeCheckSec:
@@ -76,7 +78,7 @@ class PeCheckSec:
         return self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_GUARD_CF
 
     def is_authenticode(self):
-        if platform.system() != 'Windows':
+        if os.name == 'nt':
             print('Warn: authenticode can only be checked in windows')
             return False
 
