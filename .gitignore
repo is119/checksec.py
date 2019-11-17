@@ -1,7 +1,6 @@
-venv/
-.idea/
-version_elf+pe/ver.1/__pycache__/*
-
 __pycache__/
 
-*.py
+*.pyc
+
+.idea/
+venv/
