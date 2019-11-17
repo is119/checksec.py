@@ -1,7 +1,6 @@
 #-*-coding: utf-8-*-
 from elftools.elf.elffile import ELFFile
 from elftools.elf.sections import SymbolTableSection
-from Result_DataFrame import *
 from elftools.elf.dynamic import DynamicSection
 import sys
 
@@ -92,25 +91,12 @@ def analyze_ELF_32(filename):
     elf = ELFFile(f)
     elf_type = elf.header['e_type']
 
-    #create dataframe for Analysis
-    columns=['Filename', 'CANARY', 'NX', 'PIE', 'RELRO']
-    resultTable = Result_DataFrame()
-    resultTable.create_DataFrame(columns)
-
-
-    #analyze memory protector in elf
-	#edit - return true/false
-    resultlist=[]
-    resultlist.append(filename)
-    resultlist.append(is_CANARY(elf))
-    resultlist.append(is_NX(elf))
-    resultlist.append(is_PIE(elf))
-    resultlist.append(is_RELRO(elf))
-
-    #save Analysis result and return
-    f.close()
-    resultTable.add_row(resultlist)
-    return resultTable
+    return {
+        'CANARY':is_CANARY(elf),
+        'NX':is_NX(elf),
+        'PIE':is_PIE(elf),
+        'RELRO':is_RELRO(elf)
+        }
 
 
 def analyze_ELF_64(filename):
