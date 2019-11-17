@@ -78,7 +78,7 @@ class PeCheckSec:
         return self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_GUARD_CF
 
     def is_authenticode(self):
-        if os.name == 'nt':
+        if os.name != 'nt':
             print('Warn: authenticode can only be checked in windows')
             return False
 
