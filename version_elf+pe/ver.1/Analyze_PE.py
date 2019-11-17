@@ -25,20 +25,22 @@ class PeCheckSec:
         """
         self._file_path = file_path
         self._pe = pefile.PE(file_path)
-        self._load_config = self._pe.DIRECTORY_ENTRY_LOAD_CONFIG.struct
+        self._load_config = None
+        if hasattr(self._pe, 'DIRECTORY_ENTRY_LOAD_CONFIG'):
+            self._load_config = self._pe.DIRECTORY_ENTRY_LOAD_CONFIG.struct
 
     def is_dotnet(self):
         IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR = 14
         return self._pe.OPTIONAL_HEADER.DATA_DIRECTORY[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR].VirtualAddress != 0
 
     def is_nx(self):
-        return self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_NX_COMPAT or self.is_dot_net()
+        return self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_NX_COMPAT or self.is_dotnet()
 
     def is_dynamic_base(self):
         return self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE
 
     def is_aslr(self):
-        return not self._pe.FILE_HEADER.IMAGE_FILE_RELOCS_STRIPPED and self.is_dynamic_base() or self.is_dot_net()
+        return not self._pe.FILE_HEADER.IMAGE_FILE_RELOCS_STRIPPED and self.is_dynamic_base() or self.is_dotnet()
 
     def is_high_entropy_va(self):
         return self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA and self.is_aslr()
@@ -53,21 +55,21 @@ class PeCheckSec:
         return not self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_NO_SEH
 
     def is_safe_seh(self):
-        # if self._load_config.Size < 112:
-        #     print('Warn: no or short load config, assuming no SafeSEH')
-        #     return False
+        if self._load_config is None or self._load_config.Size < 112:
+            # print('Warn: no or short load config, assuming no SafeSEH')
+            return False
         return self.is_seh() and self._load_config.SEHandlerTable != 0 and self._load_config.SEHandlerCount != 0
 
     def is_gs(self):
-        # if self._load_config.Size < 96:
-        #     print('Warn: no or short load config, assuming no GS')
-        #     return False
+        if self._load_config is None or self._load_config.Size < 96:
+            # print('Warn: no or short load config, assuming no GS')
+            return False
         return self._load_config.SecurityCookie != 0
 
     def is_rfg(self):
-        # if self._load_config.Size < 148:
-        #     print('Warn: no or short load config, assuming no RFG')
-        #     return False
+        if self._load_config is None or self._load_config.Size < 148:
+            # print('Warn: no or short load config, assuming no RFG')
+            return False
         IMAGE_GUARD_RF_INSTRUMENTED = 0x20000
         IMAGE_GUARD_RF_ENABLE = 0x40000
         IMAGE_GUARD_RF_STRICT = 0x80000
