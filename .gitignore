@@ -1,10 +1,6 @@
-venv/
-.idea/
-version_elf+pe/ver.1/__pycache__/*
-
 __pycache__/
 
-*.py
+*.pyc
 
-version_elf+pe/ver.1/sample/*
-version_elf+pe/ver.1/sumin_test/*
+.idea/
+venv/
