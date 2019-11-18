@@ -6,8 +6,8 @@ from platform import platform
 from tabulate import tabulate
 
 import Analyze_ELF
+import Analyze_OS
 import Analyze_PE
-import os_check
 
 
 def engine(file_path):
