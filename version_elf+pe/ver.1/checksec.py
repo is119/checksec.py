@@ -3,7 +3,6 @@ import json
 from argparse import ArgumentParser
 from platform import platform
 
-import magic
 from tabulate import tabulate
 
 import Analyze_ELF
@@ -12,21 +11,10 @@ import os_check
 
 
 def engine(file_path):
-    # analyze magic_number
-    # edit - no file error
-    try:
-        signature = magic.from_file(file_path)
-    except IOError:
-        print(file_path + 'is not exist!')
-        exit(0)
-
-    if 'ELF 32-bit' in signature:
-        return Analyze_ELF.analyze_ELF_32(file_path)
-    elif 'ELF 64-bit' in signature:
-        return Analyze_ELF.analyze_ELF_64(file_path)
-    elif signature.startswith('PE32'):
-        #edit-sumin test code
-        # authmem(file_path)
+    sig = open(file_path, 'rb').read(4)
+    if sig.startswith(b'\x7fELF'):
+        return Analyze_ELF.analyze_ELF(file_path)
+    elif sig.startswith(b'MZ'):
         return Analyze_PE.analyze_PE(file_path)
     else:
         raise AttributeError("Not Executable File : '%s'" % file_path)
