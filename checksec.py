@@ -31,15 +31,14 @@ def parse_args():
     parser.add_argument('file_paths', metavar='file_path', nargs='*')
     return parser.parse_args()
 
+
 def color_wrapper(color, result):
-    return Color(u"{" + color + u"}" + str(result) + u"{/" + color + u"}")
+    return Color('{%s}%s{/%s}' % (color, result, color))
 
 
 def result_color_wrapper(result):
-    if result:
-        return color_wrapper("green", result)
-    else:
-        return color_wrapper("red", result)
+    return color_wrapper(['red', 'green'][result], result)
+
 
 def main():
     args = parse_args()
