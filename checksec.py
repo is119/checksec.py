@@ -28,7 +28,10 @@ def parse_args():
     parser.add_argument('-o', '--os', dest='os', action='store_true', default=False, help='check os security')
     parser.add_argument('-b', '--build', dest='build', action='store_true', default=False, help='check build information')
     parser.add_argument('file_paths', metavar='file_path', nargs='*')
-    return parser.parse_args()
+    args = parser.parse_args()
+    if not args.os and not args.file_paths:
+        parser.print_help()
+    return args
 
 
 def main():
