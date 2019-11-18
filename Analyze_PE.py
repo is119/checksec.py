@@ -1,4 +1,6 @@
 import os
+import sys
+
 import pefile
 
 if os.name == 'nt':
@@ -53,19 +55,19 @@ class PeCheckSec:
 
     def is_safe_seh(self):
         if self._load_config is None or self._load_config.Size < 112:
-            # print('Warn: no or short load config, assuming no SafeSEH')
+            # print('Warn: no or short load config, assuming no SafeSEH', file=sys.stderr)
             return False
         return self.is_seh() and self._load_config.SEHandlerTable != 0 and self._load_config.SEHandlerCount != 0
 
     def is_gs(self):
         if self._load_config is None or self._load_config.Size < 96:
-            # print('Warn: no or short load config, assuming no GS')
+            # print('Warn: no or short load config, assuming no GS', file=sys.stderr)
             return False
         return self._load_config.SecurityCookie != 0
 
     def is_rfg(self):
         if self._load_config is None or self._load_config.Size < 148:
-            # print('Warn: no or short load config, assuming no RFG')
+            # print('Warn: no or short load config, assuming no RFG', file=sys.stderr)
             return False
         IMAGE_GUARD_RF_INSTRUMENTED = 0x20000
         IMAGE_GUARD_RF_ENABLE = 0x40000
@@ -78,7 +80,7 @@ class PeCheckSec:
 
     def is_authenticode(self):
         if os.name != 'nt':
-            print('Warn: authenticode can only be checked in windows')
+            print('Warn: authenticode can only be checked in windows', file=sys.stderr)
             return False
 
         class GUID(ctypes.Structure):
