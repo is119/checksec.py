@@ -1,5 +1,3 @@
-import sys
-
 from elftools.elf.dynamic import DynamicSection
 from elftools.elf.elffile import ELFFile
 from elftools.elf.sections import SymbolTableSection
