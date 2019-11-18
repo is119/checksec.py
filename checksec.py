@@ -42,7 +42,7 @@ def color_wrapper(color, result):
 
 
 def result_color_wrapper(result):
-    return color_wrapper(['red', 'green'][result], result)
+    return color_wrapper(['red', 'green'][bool(result)], result)
 
 
 def main():

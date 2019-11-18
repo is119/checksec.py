@@ -23,7 +23,7 @@ def is_PIE(elf):
     elf_type = elf.header['e_type']
 
     if elf_type == 'ET_EXEC':
-        return 'No PIE'
+        return False
 
     if elf_type == 'ET_DYN':
         elf_section_dynamic = elf.get_section_by_name('.dynamic')
@@ -37,7 +37,6 @@ def is_PIE(elf):
 
 # is_RELRO : must add 64bit partitial
 def is_RELRO(elf):
- # Is it relro?
     # 32
     seglist = []
     for segment in elf.iter_segments():
@@ -45,31 +44,22 @@ def is_RELRO(elf):
         seglist.append(have_segment)
 
     # Relro vs No Relro
-    have_Relro = False
+    have_relro = False
     for have_segment in seglist:
         if 'PT_GNU_RELRO' in have_segment:
-            have_Relro = True
-        else:
-            have_Relro = False
+            have_relro = True
 
-    if have_Relro == False:
-        return 'No Relo'
-
-    key = 'DT_BIND_NOW'
-    whatrelro = ''
+    if not have_relro:
+        return False
 
     # FULL RELRO vs PARTAL RELR
-    if have_Relro:
-        for section in elf.iter_sections():
-            if isinstance(section, DynamicSection):
-                for tag in section.iter_tags():
-                    if tag.entry.d_tag == key:
-                        whatrelro = 'Full Relro'
-                        break
-                    else:
-                        whatrelro = 'Partial Relro'
-
-        return whatrelro
+    for section in elf.iter_sections():
+        if not isinstance(section, DynamicSection):
+            continue
+        for tag in section.iter_tags():
+            if tag.entry.d_tag == 'DT_BIND_NOW':
+                return 'Full'
+    return 'Partial'
 
 
 def analyze_ELF(file_path):
