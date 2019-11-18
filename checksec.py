@@ -8,9 +8,9 @@ from platform import platform
 from colorclass import Color
 from tabulate import tabulate
 
-import Analyze_ELF
-import Analyze_OS
-import Analyze_PE
+from analyze_elf import analyze_elf
+from analyze_os import analyze_os
+from analyze_pe import analyze_pe
 
 
 def engine(file_path):
@@ -19,9 +19,9 @@ def engine(file_path):
 
     sig = open(file_path, 'rb').read(4)
     if sig.startswith(b'\x7fELF'):
-        return Analyze_ELF.analyze_ELF(file_path)
+        return analyze_elf(file_path)
     if sig.startswith(b'MZ'):
-        return Analyze_PE.analyze_PE(file_path)
+        return analyze_pe(file_path)
     return {}
 
 
@@ -49,7 +49,7 @@ def main():
     args = parse_args()
 
     if args.os:
-        os_result = Analyze_OS.analyze_system()
+        os_result = analyze_os()
         columns = os_result.keys()
         values = map(result_color_wrapper, os_result.values())
         print('os:', platform())
@@ -61,7 +61,7 @@ def main():
         if result:
             results[file_path] = result
         else:
-            print('Warn: not executable file: %s' % file_path, file=sys.stderr)
+            print('[W] not executable file: %s' % file_path, file=sys.stderr)
     
     if not results:
         return

@@ -7,7 +7,7 @@ if os.name == 'nt':
     import ctypes
     from ctypes.wintypes import BYTE, DWORD, HANDLE, LONG, LPCWSTR, LPVOID, ULONG, USHORT, WCHAR
 else:
-    print('Warn: authenticode can only be checked in windows', file=sys.stderr)
+    print('[W] authenticode can only be checked in windows', file=sys.stderr)
 
 
 class PeCheckSec:
@@ -159,7 +159,7 @@ class PeCheckSec:
         return status == ERROR_SUCCESS
 
 
-def analyze_PE(file_path):
+def analyze_pe(file_path):
     pe = PeCheckSec(file_path)
     return {
         '.NET': pe.is_dotnet(),

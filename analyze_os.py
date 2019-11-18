@@ -41,7 +41,7 @@ def get_posix_security():
     }
 
 
-def analyze_system():
+def analyze_os():
     if os.name == 'nt':
         return get_nt_security()
     else:

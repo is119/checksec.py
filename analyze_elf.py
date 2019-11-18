@@ -60,7 +60,7 @@ def is_RELRO(elf):
     return 'Partial'
 
 
-def analyze_ELF(file_path):
+def analyze_elf(file_path):
     elf = ELFFile(open(file_path, 'rb'))
     if elf.elfclass == 32:
         return {
