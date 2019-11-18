@@ -1,5 +1,4 @@
 import os
-
 import pefile
 
 if os.name == 'nt':
@@ -165,7 +164,6 @@ class PeCheckSec:
         trust_data.dwStateAction = WTD_STATEACTION_CLOSE
         WinVerifyTrust(0, ctypes.byref(policy_guid), ctypes.byref(trust_data))
         return status == ERROR_SUCCESS
-
 
 def analyze_PE(file_path):
     pe = PeCheckSec(file_path)

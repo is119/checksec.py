@@ -3,6 +3,7 @@ import json
 from argparse import ArgumentParser
 from platform import platform
 
+from colorclass import Color
 from tabulate import tabulate
 
 import Analyze_ELF
@@ -30,6 +31,15 @@ def parse_args():
     parser.add_argument('file_paths', metavar='file_path', nargs='*')
     return parser.parse_args()
 
+def color_wrapper(color, result):
+    return Color(u"{" + color + u"}" + str(result) + u"{/" + color + u"}")
+
+
+def result_color_wrapper(result):
+    if result:
+        return color_wrapper("green", result)
+    else:
+        return color_wrapper("red", result)
 
 def main():
     args = parse_args()
@@ -48,13 +58,14 @@ def main():
 
     if args.os:
         print('os:', platform())
-        print(tabulate([os_result.keys(), os_result.values()], tablefmt='plain'))
+        print(tabulate([os_result.keys(), map(result_color_wrapper, os_result.values())], tablefmt='plain'))
         print()
 
+    # 콘솔에 출력
     for file_path, results in results_by_file.items():
         print('filename:', file_path)
         for r in results.values():
-            print(tabulate([r.keys(), r.values()], tablefmt='plain'))
+            print(tabulate([r.keys(), map(result_color_wrapper, r.values())], tablefmt='plain'))
         print()
 
     if args.csv:
