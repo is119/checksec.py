@@ -26,8 +26,8 @@ def get_nt_security():
 
 
 def get_posix_security():
-    glibc = check_output('ldd --version | grep LIBC', encoding='utf-8').split()[-1]
-    rvs = os.system('cat /proc/sys/kernel/randomize_va_space', encoding='utf-8')
+    glibc = check_output(['ldd', '--version'], encoding='utf-8').splitlines()[0].split()[-1]
+    rvs = check_output(['cat', '/proc/sys/kernel/randomize_va_space'], encoding='utf-8')
     if rvs == '2':
         aslr = 'ASLR'
     elif rvs == '1':
