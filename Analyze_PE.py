@@ -6,22 +6,14 @@ import pefile
 if os.name == 'nt':
     import ctypes
     from ctypes.wintypes import BYTE, DWORD, HANDLE, LONG, LPCWSTR, LPVOID, ULONG, USHORT, WCHAR
+else:
+    print('Warn: authenticode can only be checked in windows', file=sys.stderr)
 
 
 class PeCheckSec:
-    """
-        PeCheckSec is derived from pefile.PE class
-        Added some useful methods to check which memory protection
-        techniques are applied
-    """
     __slots__ = ('_file_path', '_pe', '_load_config')
 
     def __init__(self, file_path):
-        """
-        Create a new PeCheckSec instance.
-        :param _file_path: file_path for Instanciating PE class which pefile module contains
-        :attribute _load_config : get image_load_config_directory's information
-        """
         self._file_path = file_path
         self._pe = pefile.PE(file_path)
         self._load_config = None
@@ -80,7 +72,6 @@ class PeCheckSec:
 
     def is_authenticode(self):
         if os.name != 'nt':
-            print('Warn: authenticode can only be checked in windows', file=sys.stderr)
             return False
 
         class GUID(ctypes.Structure):
@@ -166,6 +157,7 @@ class PeCheckSec:
         trust_data.dwStateAction = WTD_STATEACTION_CLOSE
         WinVerifyTrust(0, ctypes.byref(policy_guid), ctypes.byref(trust_data))
         return status == ERROR_SUCCESS
+
 
 def analyze_PE(file_path):
     pe = PeCheckSec(file_path)
