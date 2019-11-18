@@ -1,3 +1,4 @@
 pefile
 pyelftools
 tabulate
+colorclass
