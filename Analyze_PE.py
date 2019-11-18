@@ -2,8 +2,6 @@ import os
 
 import pefile
 
-from Result_DataFrame import Result_DataFrame
-
 if os.name == 'nt':
     import ctypes
     from ctypes.wintypes import BYTE, DWORD, HANDLE, LONG, LPCWSTR, LPVOID, ULONG, USHORT, WCHAR
