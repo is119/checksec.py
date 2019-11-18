@@ -36,7 +36,7 @@ def main():
 
     os_result = {}
     if args.os:
-        os_result = os_check.analyze_system()
+        os_result = Analyze_OS.analyze_system()
 
     results_by_file = {}
     for file_path in args.file_paths:
