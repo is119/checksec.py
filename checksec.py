@@ -1,5 +1,7 @@
 import csv
 import json
+import os
+import sys
 from argparse import ArgumentParser
 from platform import platform
 
@@ -12,26 +14,26 @@ import Analyze_PE
 
 
 def engine(file_path):
+    if not os.path.exists(file_path):
+        return {}
+
     sig = open(file_path, 'rb').read(4)
     if sig.startswith(b'\x7fELF'):
         return Analyze_ELF.analyze_ELF(file_path)
-    elif sig.startswith(b'MZ'):
+    if sig.startswith(b'MZ'):
         return Analyze_PE.analyze_PE(file_path)
-    else:
-        raise AttributeError("Not Executable File : '%s'" % file_path)
+    return {}
 
 
 def parse_args():
     parser = ArgumentParser(description='Check Security of Excutables')
-    g = parser.add_mutually_exclusive_group()
-    g.add_argument('-c', '--csv', dest='csv', action='store_true', default=False, help='save result as csv')
-    g.add_argument('-j', '--json', dest='json', action='store_true', default=False, help='save result as json')
+    parser.add_argument('-c', '--csv', dest='csv', action='store_true', default=False, help='save result as csv')
+    parser.add_argument('-j', '--json', dest='json', action='store_true', default=False, help='save result as json')
     parser.add_argument('-o', '--os', dest='os', action='store_true', default=False, help='check os security')
-    parser.add_argument('-b', '--build', dest='build', action='store_true', default=False, help='check build information')
-    parser.add_argument('file_paths', metavar='file_path', nargs='*')
+    parser.add_argument(dest='file_paths', metavar='file_path', nargs='*')
     args = parser.parse_args()
     if not args.os and not args.file_paths:
-        parser.print_help()
+        parser.error('required arguments: file_path or -o')
     return args
 
 
@@ -46,46 +48,42 @@ def result_color_wrapper(result):
 def main():
     args = parse_args()
 
-    os_result = {}
     if args.os:
         os_result = Analyze_OS.analyze_system()
-
-    results_by_file = {}
-    for file_path in args.file_paths:
-        results = {}
-        results_by_file[file_path] = results
-        results['security'] = engine(file_path)
-        if args.build:
-            results['build'] = {}
-
-    if args.os:
+        columns = os_result.keys()
+        values = map(result_color_wrapper, os_result.values())
         print('os:', platform())
-        print(tabulate([os_result.keys(), map(result_color_wrapper, os_result.values())], tablefmt='plain'))
-        print()
+        print(tabulate([columns, values], tablefmt='plain'), end='\n\n')
 
-    # 콘솔에 출력
-    for file_path, results in results_by_file.items():
-        print('filename:', file_path)
-        for r in results.values():
-            print(tabulate([r.keys(), map(result_color_wrapper, r.values())], tablefmt='plain'))
-        print()
+    results = {}
+    for file_path in args.file_paths:
+        result = engine(file_path)
+        if result:
+            results[file_path] = result
+        else:
+            print('Warn: not executable file: %s' % file_path, file=sys.stderr)
+    
+    if not results:
+        return
 
+    for file_path, result in results.items():
+        columns = result.keys()
+        values = map(result_color_wrapper, result.values())
+        print('file_path:', file_path)
+        print(tabulate([columns, values], tablefmt='plain'), end='\n\n')
+
+    # file
     if args.csv:
-        columns = ['file_path']
-        for r in results.values():
-            columns += r.keys()
-
+        columns = ['file_path'] + list(columns)
         with open('result.csv', 'w', newline='') as f:
             w = csv.writer(f)
             w.writerow(columns)
 
-            for file_path, results in results_by_file.items():
-                values = [file_path]
-                for r in results.values():
-                    values += r.values()
+            for file_path, result in results.items():
+                values = [file_path] + list(result.values())
                 w.writerow(values)
 
-    elif args.json:
+    if args.json:
         with open('result.json', 'w') as f:
             json.dump(results, f, ensure_ascii=False)
 
