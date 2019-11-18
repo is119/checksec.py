@@ -10,7 +10,7 @@ else:
     print('[W] authenticode can only be checked in windows', file=sys.stderr)
 
 
-class PeCheckSec:
+class PEAnalyzer:
     __slots__ = ('_file_path', '_pe', '_load_config')
 
     def __init__(self, file_path):
@@ -160,7 +160,7 @@ class PeCheckSec:
 
 
 def analyze_pe(file_path):
-    pe = PeCheckSec(file_path)
+    pe = PEAnalyzer(file_path)
     return {
         '.NET': pe.is_dotnet(),
         'NX': pe.is_nx(),
