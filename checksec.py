@@ -5,7 +5,7 @@ import sys
 from argparse import ArgumentParser
 from platform import platform
 
-from colorclass import Color
+from colorclass import Color, Windows
 from tabulate import tabulate
 
 from analyze_elf import analyze_elf
@@ -42,11 +42,12 @@ def color_wrapper(color, result):
 
 
 def result_color_wrapper(result):
-    return color_wrapper(['red', 'green'][bool(result)], result)
+    return color_wrapper(['autored', 'autogreen'][bool(result)], result)
 
 
 def main():
     args = parse_args()
+    Windows.enable()
 
     if args.os:
         os_result = analyze_os()
