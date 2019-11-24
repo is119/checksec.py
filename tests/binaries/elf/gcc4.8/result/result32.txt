@@ -1,0 +1,17 @@
+32scan---------------------------
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	Symbols		FORTIFY	Fortified	Fortifiable  FILE
+[33mPartial RELRO[m   [32mCanary found   [m   [32mNX enabled [m   [31mNo PIE       [m   [32mNo RPATH [m  [32mNo RUNPATH [m  [31m69 Symbols   [m  [32mYes[m	0		1	test32
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	Symbols		FORTIFY	Fortified	Fortifiable  FILE
+[33mPartial RELRO[m   [31mNo canary found[m   [32mNX enabled [m   [31mNo PIE       [m   [32mNo RPATH [m  [32mNo RUNPATH [m  [31m68 Symbols   [m  [31mNo[m	0		1	test32_nocanary
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	Symbols		FORTIFY	Fortified	Fortifiable  FILE
+[33mPartial RELRO[m   [32mCanary found   [m   [31mNX disabled[m   [31mNo PIE       [m   [32mNo RPATH [m  [32mNo RUNPATH [m  [31m69 Symbols   [m  [32mYes[m	0		1	test32_nonx
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	Symbols		FORTIFY	Fortified	Fortifiable  FILE
+[33mPartial RELRO[m   [32mCanary found   [m   [32mNX enabled [m   [31mNo PIE       [m   [32mNo RPATH [m  [32mNo RUNPATH [m  [31m69 Symbols   [m  [32mYes[m	0		1	test32_prelro
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	Symbols		FORTIFY	Fortified	Fortifiable  FILE
+[32mFull RELRO   [m   [32mCanary found   [m   [32mNX enabled [m   [31mNo PIE       [m   [32mNo RPATH [m  [32mNo RUNPATH [m  [31m68 Symbols   [m  [32mYes[m	0		1	test32_fulrelro
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	Symbols		FORTIFY	Fortified	Fortifiable  FILE
+[31mNo RELRO     [m   [32mCanary found   [m   [32mNX enabled [m   [31mNo PIE       [m   [32mNo RPATH [m  [32mNo RUNPATH [m  [31m69 Symbols   [m  [32mYes[m	0		1	test32_norelro
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	Symbols		FORTIFY	Fortified	Fortifiable  FILE
+[33mPartial RELRO[m   [32mCanary found   [m   [32mNX enabled [m   [32mPIE enabled  [m   [32mNo RPATH [m  [32mNo RUNPATH [m  [31m73 Symbols   [m  [32mYes[m	0		1	test32_PIE
+[31mError: The file '' does not exist.[m
+
