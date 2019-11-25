@@ -28,9 +28,9 @@ def get_nt_security():
 def get_posix_security():
     glibc = check_output(['ldd', '--version'], encoding='utf-8').splitlines()[0].split()[-1]
     rvs = check_output(['cat', '/proc/sys/kernel/randomize_va_space'], encoding='utf-8')
-    if rvs == '2':
+    if '2' in rvs:
         aslr = 'ASLR'
-    elif rvs == '1':
+    elif '1' in rvs:
         aslr = 'ASLR without Heap'
     else:
         aslr = False
