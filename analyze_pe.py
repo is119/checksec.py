@@ -25,24 +25,31 @@ class PEAnalyzer:
         return self._pe.OPTIONAL_HEADER.DATA_DIRECTORY[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR].VirtualAddress != 0
 
     def is_nx(self):
+        # DllCharacteristics & IMAGE_DLLCHARACTERISTICS_NX_COMPAT(0x0100)
         return self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_NX_COMPAT or self.is_dotnet()
 
     def is_dynamic_base(self):
+        # DllCharacteristics & IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE(0x0040)
         return self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE
 
     def is_aslr(self):
+        # IMAGE_FILE_RELOCS_STRIPPED(0x0001) & is_dynamic_base() | is_dotnet()
         return not self._pe.FILE_HEADER.IMAGE_FILE_RELOCS_STRIPPED and self.is_dynamic_base() or self.is_dotnet()
 
     def is_high_entropy_va(self):
+        # DllCharacteristics & IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA(0x0020) & is_aslr()
         return self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA and self.is_aslr()
 
     def is_force_integrity(self):
+        # DllCharacteristics & IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY(0x0080)
         return self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY
 
     def is_isolation(self):
+        # DllCharacteristics & IMAGE_DLLCHARACTERISTICS_NO_ISOLATION(0x0200)
         return not self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_NO_ISOLATION
 
     def is_seh(self):
+        # DllCharacteristics & IMAGE_DLLCHARACTERISTICS_NO_SEH(0x0400)
         return not self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_NO_SEH
 
     def is_safe_seh(self):
@@ -68,6 +75,7 @@ class PEAnalyzer:
             self._load_config.GuardFlags & IMAGE_GUARD_RF_ENABLE or self._load_config.GuardFlags & IMAGE_GUARD_RF_STRICT)
 
     def is_cfg(self):
+        # DllCharacteristics & IMAGE_DLLCHARACTERISTICS_GUARD_CF(0x4000)
         return self._pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_GUARD_CF
 
     def is_authenticode(self):
