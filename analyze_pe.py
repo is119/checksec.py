@@ -3,12 +3,6 @@ import sys
 
 import pefile
 
-if os.name == 'nt':
-    import ctypes
-    from ctypes.wintypes import BYTE, DWORD, HANDLE, LONG, LPCWSTR, LPVOID, ULONG, USHORT, WCHAR
-else:
-    print('[W] authenticode can only be checked in windows', file=sys.stderr)
-
 
 class PEAnalyzer:
     __slots__ = ('_file_path', '_pe', '_load_config')
@@ -80,7 +74,11 @@ class PEAnalyzer:
 
     def is_authenticode(self):
         if os.name != 'nt':
+            print('[W] authenticode can only be checked in windows', file=sys.stderr)
             return False
+
+        import ctypes
+        from ctypes.wintypes import BYTE, DWORD, HANDLE, LONG, LPCWSTR, LPVOID, ULONG, USHORT, WCHAR
 
         class GUID(ctypes.Structure):
             _fields_ = [
@@ -170,7 +168,6 @@ class PEAnalyzer:
 def analyze_pe(file_path):
     pe = PEAnalyzer(file_path)
     return {
-        '.NET': pe.is_dotnet(),
         'NX': pe.is_nx(),
         'Dynamic Base': pe.is_dynamic_base(),
         'ASLR': pe.is_aslr(),
@@ -181,6 +178,5 @@ def analyze_pe(file_path):
         'SafeSEH': pe.is_safe_seh(),
         'GS': pe.is_gs(),
         'RFG': pe.is_rfg(),
-        'CFG': pe.is_cfg(),
-        'Authenticode': pe.is_authenticode()
+        'CFG': pe.is_cfg()
     }
